@@ -32,6 +32,9 @@ public class MaintenanceLog
     @JoinColumn(name = "technician_id",nullable = false)
     private SystemUser technician;
 
-    
+    @Column(name = "work_description",nullable = false,columnDefinition = "TEXT")
+    private String workDescription;
+
+    @Column(name = "cost_incurred",nullable = false)
 
 }
