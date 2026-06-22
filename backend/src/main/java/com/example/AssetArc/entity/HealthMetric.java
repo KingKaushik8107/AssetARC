@@ -1,5 +1,6 @@
 package com.example.AssetArc.entity;
 
-public class HealthMetric {
+public class HealthMetric
+{
     
 }

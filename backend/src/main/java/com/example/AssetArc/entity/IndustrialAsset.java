@@ -1,5 +1,6 @@
 package com.example.AssetArc.entity;
 
-public class IndustrialAsset {
+public class IndustrialAsset
+{
     
 }

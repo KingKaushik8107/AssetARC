@@ -1,5 +1,6 @@
 package com.example.AssetArc.entity;
 
-public class MaintenanceSchedule {
+public class MaintenanceSchedule
+{
     
 }
