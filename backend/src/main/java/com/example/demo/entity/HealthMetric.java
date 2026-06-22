@@ -41,4 +41,7 @@ public class HealthMetric
     @Enumerated(EnumType.STRING)
     @Column(name = "current_status",nullable = false)
     private AssetStatus currentStatus;
+
+    @Column(name = "current_health")
+    
 }
