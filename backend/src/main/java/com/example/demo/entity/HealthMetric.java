@@ -23,6 +23,10 @@ public class HealthMetric
     @Column(name = "recorded_at",nullable = false)
     private LocalDateTime recordedAt;
 
-    @Column(name = "")
+    @Column(name = "health_score",nullable = false)
+    private int healthScore;
+
+    @Column(name = "vibration_level")
+    private Double vibration
 
 }
