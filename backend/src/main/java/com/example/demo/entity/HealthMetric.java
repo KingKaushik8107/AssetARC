@@ -43,5 +43,7 @@ public class HealthMetric
     private AssetStatus currentStatus;
 
     @Column(name = "current_health")
-    
+    private int currentHealth;
+
+
 }
