@@ -7,7 +7,8 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Builder
+@Table(name = "industrial_assets")
 public class HealthMetric
 {
     
