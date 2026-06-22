@@ -3,6 +3,8 @@ package com.example.demo.entity;
 import java.time.LocalDate;
 
 import com.example.demo.enums.MaintenanceType;
+import com.example.demo.enums.Priority;
+import com.example.demo.enums.ScheduleStatus;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,5 +34,9 @@ public class MaintenanceSchedule
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Prio
+    private Priority priority;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ScheduleStatus status;
 }
