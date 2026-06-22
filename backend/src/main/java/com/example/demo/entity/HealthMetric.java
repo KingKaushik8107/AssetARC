@@ -17,8 +17,9 @@ public class HealthMetric
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
  
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asset_id",nullable = false)
-    private int asset;
+    private IndustrialAsset asset;
 
     @Column(name = "recorded_at",nullable = false)
     private LocalDateTime recordedAt;
