@@ -17,8 +17,12 @@ public class HealthMetric
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
  
+    @JoinColumn(name = "asset_id",nullable = false)
     private int asset;
 
-    private LocalDateTime
+    @Column(name = "recorded_at",nullable = false)
+    private LocalDateTime recordedAt;
+
+    @Column(name = "")
 
 }
