@@ -3,8 +3,12 @@ package com.example.demo.entity;
 import com.example.demo.enums.Role;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "system_users")
 public class SystemUser
 {
@@ -21,6 +25,9 @@ public class SystemUser
     @Enumerated(EnumType.STRING)
     private Role role;
 
+
+
+    //
     public Long getId() {
         return id;
     }
