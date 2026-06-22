@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +23,12 @@ public class MaintenanceLog
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "schedule_id",unique = true)
-    private MaintenanceSchedule
+    private MaintenanceSchedule schedule;
+
+    @Column(name = "completion_date",nullable = false)
+    private LocalDateTime completionDate;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "technician_id",nullable)
 
 }
