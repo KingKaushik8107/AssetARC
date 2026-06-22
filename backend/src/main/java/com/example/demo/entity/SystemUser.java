@@ -6,9 +6,15 @@ import jakarta.persistence.*;
 public class SystemUser
 {
     @Id
-    @GeneratedValue(strategy = )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
+    @
     private 
 }
