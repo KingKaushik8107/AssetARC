@@ -16,6 +16,6 @@ public class SystemUser
     @Column(nullable = false)
     private String password;
 
-    @
-    private 
+    @Enumerated()
+    private enum role
 }
