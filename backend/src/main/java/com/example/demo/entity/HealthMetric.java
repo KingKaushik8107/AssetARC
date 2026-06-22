@@ -32,7 +32,4 @@ public class HealthMetric
 
     @Column(name = "temperature_celsius")
     private Double temperatureCelsius;
-
-
-
 }
