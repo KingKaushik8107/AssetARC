@@ -17,5 +17,10 @@ public class MaintenanceLog
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "asset_id",nullable = false)
-    private Ind
+    private IndustrialAsset asset;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "schedule_id",unique = true)
+    private MaintenanceSchedule
+
 }
