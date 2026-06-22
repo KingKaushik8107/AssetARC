@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +18,12 @@ public class MaintenanceSchedule
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "planned_date",nullable = false)
-    private IndustrialAsset 
+    @JoinColumn(name = "asset_id",nullable = false)
+    private IndustrialAsset asset;
+
+    @Column(name = "planned_date",nullable = false)
+    private LocalDate plannedDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "mainte")
 }
