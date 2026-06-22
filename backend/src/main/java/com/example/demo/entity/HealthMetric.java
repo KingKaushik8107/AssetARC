@@ -12,6 +12,8 @@ import lombok.*;
 public class HealthMetric
 {
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "asset_tag",unique = true)
 }
