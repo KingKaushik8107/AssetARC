@@ -15,5 +15,7 @@ public class MaintenanceSchedule
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "planned_date",nullable = false)
+    private IndustrialAsset 
 }
