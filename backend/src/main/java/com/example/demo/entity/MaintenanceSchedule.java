@@ -2,6 +2,8 @@ package com.example.demo.entity;
 
 import java.time.LocalDate;
 
+import com.example.demo.enums.MaintenanceType;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,5 +27,10 @@ public class MaintenanceSchedule
     private LocalDate plannedDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "mainte")
+    @Column(name = "maintenance_type",nullable = false)
+    private MaintenanceType maintenanceType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Prio
 }
