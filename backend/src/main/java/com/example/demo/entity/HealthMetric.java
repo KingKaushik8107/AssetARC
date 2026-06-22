@@ -18,6 +18,6 @@ public class HealthMetric
     @Column(name = "asset_tag",unique = true,nullable = false)
     private String assetTag;
 
-    @Column(n)
+    @Column()
     private String name;
 }
