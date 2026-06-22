@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -36,5 +37,6 @@ public class MaintenanceLog
     private String workDescription;
 
     @Column(name = "cost_incurred",nullable = false)
+    private BigDecimal costIncurred;
 
 }
