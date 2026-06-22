@@ -29,6 +29,9 @@ public class MaintenanceLog
     private LocalDateTime completionDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "technician_id",nullable)
+    @JoinColumn(name = "technician_id",nullable = false)
+    private SystemUser technician;
+
+    
 
 }
