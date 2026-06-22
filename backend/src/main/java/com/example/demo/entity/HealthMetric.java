@@ -1,5 +1,8 @@
 package com.example.demo.entity;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,5 +27,11 @@ public class HealthMetric
     @Column(nullable = false)
     private String category;
 
-    @Column(name = "install_date")
+    @Column(name = "install_date", nullable = false)
+    private LocalDate installDate;
+
+    @Column(name = "purchase_price",nullable = false)
+    private BigDecimal purchasePrice;
+
+    @Column
 }
