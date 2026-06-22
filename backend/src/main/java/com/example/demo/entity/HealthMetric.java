@@ -11,5 +11,7 @@ import lombok.*;
 @Table(name = "industrial_assets")
 public class HealthMetric
 {
-    
+    @Id
+    @GeneratedValue()
+    private Long id;
 }
