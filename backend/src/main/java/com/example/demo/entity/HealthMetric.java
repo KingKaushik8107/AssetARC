@@ -33,5 +33,9 @@ public class HealthMetric
     @Column(name = "purchase_price",nullable = false)
     private BigDecimal purchasePrice;
 
-    @Column
+    @Column(name = "expected_lifespan_years",nullable = false)
+    private int expectedLifespanYears;
+
+    @Enumerated(EnumType.STRING)
+    @Column(na)
 }
