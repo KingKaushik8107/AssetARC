@@ -3,6 +3,8 @@ package com.example.demo.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.example.demo.enums.AssetStatus;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,5 +39,6 @@ public class HealthMetric
     private int expectedLifespanYears;
 
     @Enumerated(EnumType.STRING)
-    @Column(na)
+    @Column(name = "current_status",nullable = false)
+    private AssetStatus currentStatus;
 }
