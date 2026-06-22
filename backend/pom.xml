@@ -14,9 +14,9 @@
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>AssetArc</artifactId>
+    <artifactId>demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>AssetArc</name>
+    <name>demo</name>
 
     <properties>
         <java.version>17</java.version>
