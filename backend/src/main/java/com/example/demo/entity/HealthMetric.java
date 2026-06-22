@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "industrial_assets")
+@Table(name = "health_metrics")
 public class HealthMetric
 {
     @Id
@@ -27,6 +27,11 @@ public class HealthMetric
     private int healthScore;
 
     @Column(name = "vibration_level")
-    private Double vibration
+    private Double vibrationLevel;
+
+    @Column(name = "temperature_celsius")
+    private Double temperatureCelsius;
+
+
 
 }
