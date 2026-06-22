@@ -27,7 +27,7 @@ public class SystemUser
 
 
 
-    //
+    //Getters and Setters
     public Long getId() {
         return id;
     }
