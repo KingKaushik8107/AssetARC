@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.example.demo.enums.Role;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +18,6 @@ public class SystemUser
     @Column(nullable = false)
     private String password;
 
-    @Enumerated()
-    private enum role
+    @Enumerated(EnumType.STRING)
+    private enum role;
 }
