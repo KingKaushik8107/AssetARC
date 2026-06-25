@@ -1,5 +1,21 @@
 package com.example.demo.dto;
 
-public class AssetRequestDto {
-    
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import lombok.*;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AssetRequestDto
+{
+    private String assetTag;
+    private String name;
+    private String category;
+    private LocalDate installDate;
+    private BigDecimal purchaseprice;
+    private Integer expectedLifespanYears;
+
 }
