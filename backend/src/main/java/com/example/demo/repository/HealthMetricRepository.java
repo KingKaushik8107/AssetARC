@@ -11,5 +11,5 @@ import com.example.demo.entity.HealthMetric;
 public interface HealthMetricRepository extends JpaRepository<HealthMetric,Long>
 {
     List<HealthMetric>findByAssetIdOrderByRecordedAtDesc(Long assetId);
-    
+    Optional<HealthMetric>findTopByAssetIdOrderByRecorderAtDesc(Long assetId);
 }
