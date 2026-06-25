@@ -8,5 +8,8 @@ import org.springframework.web.bind.annotation.*;
 public class ConditionMonitoringController
 {
     @PostMapping("/metrics")
-    public ResponseEntity<> 
+    public ResponseEntity<> createMetrics()
+    {
+        
+    }
 }
