@@ -12,7 +12,7 @@ public class ConditionMonitoringService
     @Autowired
     HealthMetricRepository repository;
 
-    @Transactional
+    // @Transactional
     public void recordHealthMetric(HealthMetricDto dto)
     {
 
