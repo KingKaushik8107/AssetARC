@@ -6,5 +6,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/monitoring")
 public class ConditionMonitoringController
 {
-    
+    @PostMapping("/metrics")
+    public 
 }
