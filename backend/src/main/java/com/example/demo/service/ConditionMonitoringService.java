@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dto.HealthMetricDto;
 import com.example.demo.repository.HealthMetricRepository;
 
-import jakarta.transaction.Transactional;
+// import jakarta.transaction.Transactional;
 
 @Service
 public class ConditionMonitoringService
