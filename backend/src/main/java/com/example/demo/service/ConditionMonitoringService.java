@@ -1,5 +1,11 @@
 package com.example.demo.service;
 
-public class ConditionMonitoringService {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ConditionMonitoringService
+{
+    @Autowired
     
 }
