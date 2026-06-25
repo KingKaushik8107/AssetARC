@@ -14,9 +14,9 @@ public class ConditionMonitoringController
     @Autowired
     ConditionMonitoringService service;
 
-    // @PostMapping("/metrics")
-    // public ResponseEntity<Void> createMetrics(@RequestBody HealthMetricDto dto)
-    // {
-    //     service.recordHealthMetric(dto);
-    // }
+    @PostMapping("/metrics")
+    public ResponseEntity<Void> createMetrics(@RequestBody HealthMetricDto dto)
+    {
+        service.recordHealthMetric(dto);
+    }
 }
