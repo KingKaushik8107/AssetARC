@@ -1,5 +1,10 @@
 package com.example.demo.controller;
 
-public class ConditionMonitoringController {
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/monitoring")
+public class ConditionMonitoringController
+{
     
 }
