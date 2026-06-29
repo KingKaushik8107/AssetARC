@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,18 @@ public class MaintenanceService
         }
 
         MaintenanceLog log = MaintenanceLog.builder()
-            .asset(schedule.)
+            .asset(schedule.getAsset())
+            .schedule(schedule)
+            .completionDate(LocalDateTime.now())
+            .technician(technician)
+            .workDescription(dto.getWorkDescription())
+            .costIncurred(dto.getCostIncurred())
+            .build();
+        
+        logRepository.save(log);
+
+        schedule.setStatus(ScheduleStatus.COMPLETED);
+        scheduleRepository.save(schedule);
 
     }
 
@@ -96,4 +108,3 @@ public class MaintenanceService
     {
         logRepository.deleteById(id);
     }
-}
