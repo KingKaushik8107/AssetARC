@@ -70,7 +70,7 @@ public class MaintenanceService
     public MaintenanceLog completeMaintenanceTask(LogRequestDto dto)
     {
         MaintenanceSchedule schedule = scheduleRepository.findById(dto.getScheduled())
-            .orElseThrow( ()-> new ResourceNotFoundException("Schedule not found"));\
+            .orElseThrow( ()-> new ResourceNotFoundException("Schedule not found"));
         
         if (schedule.getStatus() != ScheduleStatus.PENDING)
         {
