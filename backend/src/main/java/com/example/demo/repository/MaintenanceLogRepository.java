@@ -14,7 +14,8 @@ public interface MaintenanceLogRepository extends JpaRepository<MaintenanceLog,L
 {
     List<MaintenanceLog> findByAssetId(Long assetId);
     
-    @Query("SELECT SUM(I,costIncurred) FROM MaintenanceLog I WHERE I.asset.id = assetId")
+    // @Query("SELECT SUM(I.costIncurred) FROM MaintenanceLog I WHERE I.asset.id = assetId")
+    @Query("SELECT SUM(m.costIncurred) FROM MaintenanceLog m WHERE m.asset.id = :assetId")
     BigDecimal sumCostByAssetId(@Param("assetId") Long assetId);
     
 }
