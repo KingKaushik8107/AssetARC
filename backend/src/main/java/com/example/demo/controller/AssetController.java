@@ -45,4 +45,7 @@ public class AssetController
         return ResponseEntity.status(HttpStatus.CREATED)
             .body("Asset created successfully");
     }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('')")
 }
