@@ -12,6 +12,7 @@ import com.example.demo.entity.MaintenanceLog;
 import com.example.demo.entity.MaintenanceSchedule;
 import com.example.demo.enums.AssetStatus;
 import com.example.demo.enums.ScheduleStatus;
+import com.example.demo.exception.BusinessValidationException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 import com.example.demo.repository.MaintenanceLogRepository;
@@ -65,7 +66,13 @@ public class MaintenanceService
     public MaintenanceLog completeMaintenanceTask(LogRequestDto dto)
     {
         MaintenanceSchedule schedule = scheduleRepository.findById(dto.getScheduled())
-            .orElseThrow( ()-> new Res)
+            .orElseThrow( ()-> new ResourceNotFoundException("Schedule not found"));\
+        
+        if (schedule.getStatus() != ScheduleStatus.PENDING)
+        {
+            throw new BusinessValidationException("Task is already processed or cancelled");
+        }
+        
     }
 
 
