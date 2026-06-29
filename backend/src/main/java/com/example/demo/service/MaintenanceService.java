@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.entity.MaintenanceLog;
 import com.example.demo.entity.MaintenanceSchedule;
+import com.example.demo.enums.ScheduleStatus;
 import com.example.demo.repository.MaintenanceLogRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
 
@@ -14,10 +16,12 @@ public class MaintenanceService
 {
     @Autowired
     MaintenanceScheduleRepository scheduleRepository;
-    MaintenanceLogRepository maintenanceLogRepository;
+    MaintenanceLogRepository logRepository;
 
     public List<MaintenanceSchedule> getUpcomingSchedules()
     {
-        return 
+        return scheduleRepository.findByStatus(ScheduleStatus.PENDING);
     }
+
+    public List<MaintenanceLog> getAllLogs
 }
