@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.LogRequestDto;
 import com.example.demo.dto.ScheduleRequestDto;
 import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.entity.MaintenanceLog;
@@ -61,7 +62,11 @@ public class MaintenanceService
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public MaintenanceLog completeMaintenanceTask
+    public MaintenanceLog completeMaintenanceTask(LogRequestDto dto)
+    {
+        MaintenanceSchedule schedule = scheduleRepository.findById(dto.getScheduled())
+            .orElseThrow( ()-> new Res)
+    }
 
 
     @Transactional
