@@ -26,6 +26,9 @@ public class AssetController
     @GetMapping
     public ResponseEntity<Page<IndustrialAsset>>getAllAssets(Pageable pageable)
     {
-        return ResponseEntity.ok(service.getAllAssets(pageable))
+        return ResponseEntity.ok(service.getAllAssets(pageable));
     }
+
+    @GetMapping("/{id}")
+    public 
 }
