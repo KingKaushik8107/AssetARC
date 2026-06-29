@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.math.BigDecimal;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,7 +43,9 @@ public class AssetService
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
             
             Map<String,Long> statusDistribution = asset.stream()
-                .collect(Collectors)
+                .collect(Collectors.groupingBy(
+                    
+                ))
         
         
     }
