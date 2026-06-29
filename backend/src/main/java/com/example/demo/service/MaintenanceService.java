@@ -12,6 +12,7 @@ import com.example.demo.entity.MaintenanceLog;
 import com.example.demo.entity.MaintenanceSchedule;
 import com.example.demo.entity.SystemUser;
 import com.example.demo.enums.AssetStatus;
+import com.example.demo.enums.Role;
 import com.example.demo.enums.ScheduleStatus;
 import com.example.demo.exception.BusinessValidationException;
 import com.example.demo.exception.ResourceNotFoundException;
@@ -77,7 +78,16 @@ public class MaintenanceService
         }
 
         SystemUser technician = userRepository.findById(dto.getTechnicianId())
-            .orElseThrow( ()-> new ResourceNotFoundException("Technician not found"))
+            .orElseThrow( ()-> new ResourceNotFoundException("Technician not found"));
+        
+        if (technician.getRole() != Role.MAINTENANCE_TECHNICIAN)
+        {
+            throw new BusinessValidationException("Selected user is not a maintenance technician");
+        }
+
+        MaintenanceLog log = MaintenanceLog.builder()
+            .asset(schedule.)
+
     }
 
 
