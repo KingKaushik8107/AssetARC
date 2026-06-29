@@ -100,11 +100,17 @@ public class MaintenanceService
         schedule.setStatus(ScheduleStatus.COMPLETED);
         scheduleRepository.save(schedule);
 
+        IndustrialAsset asset = schedule.getAsset();
+        asset.setCurrentStatus(AssetStatus.ACTIVE);
+        asset.setCurrentHealth(100);
+        assetRepository.save(asset);
+
+        return log;
+
     }
-
-
     @Transactional
     public void deleteLog(Long id)
     {
         logRepository.deleteById(id);
     }
+}
