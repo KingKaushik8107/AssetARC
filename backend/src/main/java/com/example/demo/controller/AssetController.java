@@ -19,7 +19,7 @@ public class AssetController
     @Autowired
     AssetService service;
 
-    @GetMapping("/register")
+    @GetMapping("/stats")
     public ResponseEntity<DashboardStatsDto> getStats()
     {
         return ResponseEntity.ok(service.getDashboardStats());
