@@ -18,6 +18,7 @@ public class ConditionMonitoringController
     public ResponseEntity<Void> createMetrics(@RequestBody HealthMetricDto dto)
     {
         service.recordHealthMetric(dto);
-        return ResponseEntity.ok(null);
+        // return ResponseEntity.ok(null);
+        
     }
 }
