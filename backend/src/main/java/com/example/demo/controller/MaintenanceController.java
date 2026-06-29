@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.demo.dto.LogRequestDto;
 import com.example.demo.dto.ScheduleRequestDto;
 import com.example.demo.entity.MaintenanceLog;
 import com.example.demo.entity.MaintenanceSchedule;
@@ -40,6 +41,13 @@ public class MaintenanceController
     
     @PostMapping("/complete")
     // @PreAuthorize("hasAnyRole('MAINTENANCE_TECHNICIAN')")
-    public ResponseEntity<MaintenanceLog> completeMaintenance(@RequestBody LogRe)
+    public ResponseEntity<MaintenanceLog> completeMaintenance(@RequestBody LogRequestDto dto)
+    {
+        return ResponseEntity.ok(service.completeMaintenanceTask(dto));
+    }
     
+    @DeleteMapping("/logs/{id}")
+    // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
+    public ResponseEntity<String> deleteLog(@PathVariable Long id)
+
 }
