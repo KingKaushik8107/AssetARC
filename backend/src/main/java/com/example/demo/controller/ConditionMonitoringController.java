@@ -15,9 +15,9 @@ public class ConditionMonitoringController
     ConditionMonitoringService service;
 
     @PostMapping("/metrics")
-    public ResponseEntity<Void> createMetrics(@RequestBody HealthMetricDto dto)
+    public ResponseEntity<Void> recordHealthMetrics(@RequestBody HealthMetricDto dto)
     {
         service.recordHealthMetric(dto);
-        return ResponseEntity.ok(null);   
+        return ResponseEntity.ok().build();   
     }
 }
