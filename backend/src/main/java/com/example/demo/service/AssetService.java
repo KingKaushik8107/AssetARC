@@ -25,11 +25,19 @@ public class AssetService
 
     public Page<IndustrialAsset> getAllAssets(Pageable pageable)
     {
-        repo.findAll(pageable);
+        return(repo.findAll(pageable));
 
-        
+
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllAssets'");
+        // throw new UnsupportedOperationException("Unimplemented method 'getAllAssets'");
+    }
+
+    public ResponseEntity<IndustrialAsset> getAssetById(Long id)
+    {
+        return(repo.findById(id));
+
+        // TODO Auto-generated method stub
+        // throw new UnsupportedOperationException("Unimplemented method 'getAssetById'");
     }
     
 }
