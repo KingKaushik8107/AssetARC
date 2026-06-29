@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.HealthMetricDto;
+import com.example.demo.entity.IndustrialAsset;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.HealthMetricRepository;
 import com.example.demo.repository.IndustrialAssetRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
@@ -25,6 +27,9 @@ public class ConditionMonitoringService
     @Transactional
     public void recordHealthMetric(HealthMetricDto dto)
     {
+        IndustrialAsset asset = assetRepository.findById(dto.getAssetId())
+            .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
+        
         
     }
 }
