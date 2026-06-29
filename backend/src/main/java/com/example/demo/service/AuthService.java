@@ -7,6 +7,7 @@ import com.example.demo.dto.AuthRequestDto;
 import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.RegisterDto;
 import com.example.demo.entity.SystemUser;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.SystemUserRepository;
 import com.example.demo.security.JwtService;
 
@@ -49,8 +50,14 @@ public class AuthService
     {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
-                
+                dto.getUsername()
+                dto.getPassword()
             )
-        )
+        );
+
+        SystemUser user = userRepository.findByUsername(dto.getUsername())
+            .orElseThrow( ()-> new ResourceNotFoundException("User not found"));
+
+        String token = 
     }
 }
