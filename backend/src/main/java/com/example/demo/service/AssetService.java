@@ -25,7 +25,12 @@ public class AssetService
     public ResponseEntity<DashboardStatsDto> getDashboardStats()
     {
         var asset = repo.findAll();
-        long totalAsset = 
+        long totalAsset = asset.size();
+        long maintenanceCount = asset.stream()
+            .filter(a -> a.getCurrentStatus() == AssetStatus.UNDER_MAINTENANCE).count();
+
+        double avgHealth = asset.stream()
+            .map
     }
 
     public Page<IndustrialAsset> getAllAssets(Pageable pageable)
