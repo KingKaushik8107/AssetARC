@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.DashboardStatsDto;
 import com.example.demo.entity.IndustrialAsset;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 
 @Service
@@ -34,10 +35,10 @@ public class AssetService
 
     public ResponseEntity<IndustrialAsset> getAssetById(Long id)
     {
-        return(repo.findById(id));
+        return(repo.findById(id)).orElseThrow(ResourceNotFoundException)
 
         // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'getAssetById'");
+        throw new UnsupportedOperationException("Unimplemented method 'getAssetById'");
     }
     
 }
