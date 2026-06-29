@@ -31,6 +31,11 @@ public class DashboardService
             .filter(price -> price != null)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         
-            Map<String, Long> status
+            Map<String, Long> statusDistribution = new HashMap<>();
+
+            for (IndustrialAsset asset:assets)
+            {
+                String status = asset.
+            }
     }
 }
