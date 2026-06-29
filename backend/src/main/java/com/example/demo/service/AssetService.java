@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dto.AssetRequestDto;
 import com.example.demo.dto.DashboardStatsDto;
 import com.example.demo.entity.IndustrialAsset;
+import com.example.demo.enums.AssetStatus;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 
@@ -46,6 +47,10 @@ public class AssetService
             .installDate(dto.getInstallDate())
             .purchasePrice(dto.getPurchaseprice())
             .expectedLifespanYears(dto.getExpectedLifespanYears())
-            .currentStatus(As)
+            .currentStatus(AssetStatus.ACTIVE)
+            .currentHealth(100)
+            .build();
+
+        return repo.save(asset);
     }
 }
