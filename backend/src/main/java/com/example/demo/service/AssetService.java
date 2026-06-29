@@ -14,6 +14,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.val;
 
 @Service
 public class AssetService
@@ -67,6 +68,14 @@ public class AssetService
         asset.setInstallDate(dto.getInstallDate());
         asset.setPurchasePrice(dto.getPurchaseprice());
         asset.setExpectedLifespanYears(dto.getExpectedLifespanYears());
-        
+
+        return repo.save(asset);
+    }
+
+    @Transactional
+    public void decommisionAsset(Long id)
+    {
+        IndustrialAsset asset = repo.findById(id)
+            .orElseThrow()
     }
 }
