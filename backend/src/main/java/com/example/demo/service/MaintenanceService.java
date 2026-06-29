@@ -10,6 +10,7 @@ import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.entity.MaintenanceLog;
 import com.example.demo.entity.MaintenanceSchedule;
 import com.example.demo.enums.ScheduleStatus;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 import com.example.demo.repository.MaintenanceLogRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
@@ -38,7 +39,10 @@ public class MaintenanceService
     @Transactional
     public MaintenanceSchedule scheduleMaintenance(ScheduleRequestDto dto)
     {
+        IndustrialAsset asset = assetRepository.findById(dto.getAssetId())
+            .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
 
+        Main
     }
 
     @Transactional
