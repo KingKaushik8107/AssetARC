@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.demo.entity.MaintenanceLog;
 import com.example.demo.entity.MaintenanceSchedule;
 import com.example.demo.service.MaintenanceService;
 
@@ -21,5 +22,11 @@ public class MaintenanceController
     {
         ResponseEntity.ok(service.getUpcomingSchedules());
 
+    }
+
+    @GetMapping("/logs")
+    public ResponseEntity<List<MaintenanceLog>>getLogs()
+    {
+        return ResponseEntity
     }
 }
