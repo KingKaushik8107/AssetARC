@@ -19,7 +19,7 @@ public class MaintenanceController
     @GetMapping("/schedules")
     public ResponseEntity<List<MaintenanceSchedule>> getSchedules()
     {
-        service.getUpcomingSchedules();
-        
+        ResponseEntity.ok(service.getUpcomingSchedules());
+
     }
 }
