@@ -22,7 +22,7 @@ public class AssetController
     @GetMapping("/register")
     public ResponseEntity<DashboardStatsDto> getStats()
     {
-        return service.getDashboardStats();
+        return ResponseEntity.ok(service.getDashboardStats());
     }
 
     @GetMapping

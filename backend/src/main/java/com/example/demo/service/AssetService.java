@@ -19,7 +19,6 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 
 import jakarta.transaction.Transactional;
-import lombok.val;
 
 @Service
 public class AssetService
@@ -27,7 +26,7 @@ public class AssetService
     @Autowired
     IndustrialAssetRepository repo;
 
-    public ResponseEntity<DashboardStatsDto> getDashboardStats()
+    public DashboardStatsDto getDashboardStats()
     {
         var asset = repo.findAll();
         long totalAsset = asset.size();
@@ -39,30 +38,27 @@ public class AssetService
             .average()
             .orElse(100);
         
-            BigDecimal totalFleetValue = asset.stream()
-                .map(IndustrialAsset::getPurchasePrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalFleetValue = asset.stream()
+            .map(IndustrialAsset::getPurchasePrice)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
             
-            Map<String,Long> statusDistribution = asset.stream()
-                .collect(Collectors.groupingBy(
-                    a -> a.getCurrentStatus().name(),Collectors.counting()
-                ));
+        Map<String,Long> statusDistribution = asset.stream()
+            .collect(Collectors.groupingBy(
+                a -> a.getCurrentStatus().name(),Collectors.counting()
+            ));
                 
-            return DashboardStatsDto.builder()
-                .totalAssets(totalAsset)
-                .activeMaintenanceCount(maintenanceCount)
-                .averageHealthScore(avgHealth)
-                .totalFleetValue(totalFleetValue)
-                .statusDistribution(statusDistribution)
-                .build();
-                
-        
+        return DashboardStatsDto.builder()
+            .totalAssets(totalAsset)
+            .activeMaintenanceCount(maintenanceCount)
+            .averageHealthScore(avgHealth)
+            .totalFleetValue(totalFleetValue)
+            .statusDistribution(statusDistribution)
+            .build();
     }
 
     public Page<IndustrialAsset> getAllAssets(Pageable pageable)
     {
         return(repo.findAll(pageable));
-
     }
 
     public IndustrialAsset getAssetById(Long id)
