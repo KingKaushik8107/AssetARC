@@ -19,7 +19,7 @@ public class DashboardService
     IndustrialAssetRepository assetRepository;
 
     @Transactional(readOnly = true)
-    public DashboardStatsDto gDashboardStatsDto()
+    public DashboardStatsDto getDashboardStats()
     {
         long totalAssets = assetRepository.count();
         long activeMaintenance = assetRepository.countByCurrentStatus(AssetStatus.UNDER_MAINTENANCE);
@@ -38,5 +38,13 @@ public class DashboardService
                 String status = asset.getCurrentStatus().name();
                 statusDistribution.put(status, statusDistribution.getOrDefault(status, 0L)+1);
             }
+
+            return DashboardStatsDto.builder()
+                .totalAssets(totalAssets)
+                .activeMaintenanceCount(activeMaintenance)
+                .totalFleetValue(totalValue)
+                .averageHealthScore(85.5)
+                .statusDistribution(statusDistribution)
+                .build();
     }
 }
