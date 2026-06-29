@@ -27,6 +27,13 @@ public class AuthService
     public AuthResponseDto register(RegisterDto dto)
     {
         SystemUser user = SystemUser.builder()
-            .username(null)
+            .username(dto.getUsername())
+            .password(passwordEncoder.encode(dto.getPassword()))
+            .role(dto.getRole())
+            .build();
+
+        userRepository.save(user);
+
+        String token
     }
 }
