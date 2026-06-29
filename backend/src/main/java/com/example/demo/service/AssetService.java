@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -44,9 +45,12 @@ public class AssetService
             
             Map<String,Long> statusDistribution = asset.stream()
                 .collect(Collectors.groupingBy(
-                    
-                ))
-        
+                    a -> a.getCurrentStatus().name(),Collectors.counting()
+                ));
+                
+            return DashboardStatsDto.builder()
+                .totalAssets(totalAsset)
+                .maintenanceC
         
     }
 
