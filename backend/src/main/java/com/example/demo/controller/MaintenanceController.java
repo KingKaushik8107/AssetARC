@@ -20,5 +20,6 @@ public class MaintenanceController
     public ResponseEntity<List<MaintenanceSchedule>> getSchedules()
     {
         service.getUpcomingSchedules();
+        
     }
 }

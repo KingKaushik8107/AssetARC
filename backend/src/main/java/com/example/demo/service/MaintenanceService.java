@@ -12,6 +12,8 @@ import com.example.demo.enums.ScheduleStatus;
 import com.example.demo.repository.MaintenanceLogRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
 
+import jakarta.transaction.*;
+
 @Service
 public class MaintenanceService
 {
@@ -34,7 +36,7 @@ public class MaintenanceService
 
     // }
 
-    
+    @Transactional
     public void deleteLog(Long id)
     {
         logRepository.deleteById(id);
