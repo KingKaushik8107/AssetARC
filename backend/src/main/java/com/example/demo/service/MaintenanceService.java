@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.LogRequestDto;
 import com.example.demo.dto.ScheduleRequestDto;
@@ -21,8 +22,6 @@ import com.example.demo.repository.IndustrialAssetRepository;
 import com.example.demo.repository.MaintenanceLogRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
 import com.example.demo.repository.SystemUserRepository;
-
-import jakarta.transaction.*;
 
 @Service
 public class MaintenanceService
