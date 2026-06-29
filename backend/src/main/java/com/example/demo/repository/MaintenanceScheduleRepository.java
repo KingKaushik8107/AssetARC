@@ -1,5 +1,9 @@
 package com.example.demo.repository;
 
-public class MaintenanceScheduleRepository {
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface MaintenanceScheduleRepository 
+{
     
 }
