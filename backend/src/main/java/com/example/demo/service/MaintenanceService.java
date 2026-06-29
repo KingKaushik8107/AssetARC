@@ -28,8 +28,14 @@ public class MaintenanceService
 {
     @Autowired
     MaintenanceScheduleRepository scheduleRepository;
+
+    @Autowired
     MaintenanceLogRepository logRepository;
+
+    @Autowired
     IndustrialAssetRepository assetRepository;
+
+    @Autowired
     SystemUserRepository userRepository;
 
 
