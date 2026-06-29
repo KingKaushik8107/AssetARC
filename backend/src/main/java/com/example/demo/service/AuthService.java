@@ -58,6 +58,13 @@ public class AuthService
         SystemUser user = userRepository.findByUsername(dto.getUsername())
             .orElseThrow( ()-> new ResourceNotFoundException("User not found"));
 
-        String token = 
+        String token = jwtService.generateToken(user);
+
+        return AuthResponseDto.builder()
+            .token(token)
+            .id(user.getId())
+            .username(user.getUsername())
+            .role(user.getRole().name())
+            .build();
     }
 }
