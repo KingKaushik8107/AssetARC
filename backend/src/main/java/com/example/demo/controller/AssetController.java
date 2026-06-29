@@ -47,5 +47,10 @@ public class AssetController
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('')")
+    // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
+    public ResponseEntity<String> updateAsset(@PathVariable Long id, @RequestBody AssetRequestDto dto)
+    {
+        service.updateAsset(id, dto);
+        return
+    }
 }
