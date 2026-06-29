@@ -39,6 +39,7 @@ public class AssetService
 
     public void createAsset(AssetRequestDto dto)
     {
-        
+        IndustrialAsset asset = IndustrialAsset.builder().assetTag(dto.getAssetTag())
+            .name(dto.)
     }
 }
