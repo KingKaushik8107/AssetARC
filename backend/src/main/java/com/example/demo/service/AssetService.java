@@ -51,7 +51,11 @@ public class AssetService
             return DashboardStatsDto.builder()
                 .totalAssets(totalAsset)
                 .activeMaintenanceCount(maintenanceCount)
-                .a
+                .averageHealthScore(avgHealth)
+                .totalFleetValue(totalFleetValue)
+                .statusDistribution(statusDistribution)
+                .build();
+                
         
     }
 
