@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,9 +32,12 @@ public class AssetService
             .filter(a -> a.getCurrentStatus() == AssetStatus.UNDER_MAINTENANCE).count();
 
         double avgHealth = asset.stream()
-            .mapToDouble(a -> a.getCurrentHealth() == null ? 100 : a.getCurrentHealth())
+            .mapToDouble(a -> a.getCurrentHealth())
             .average()
             .orElse(100);
+        
+            BigDecimal totalFleetValue = asset.stream()
+                .map(IndustrialAsset::)
         
         
     }
