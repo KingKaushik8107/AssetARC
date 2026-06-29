@@ -1,10 +1,13 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.HealthMetricDto;
+import com.example.demo.entity.HealthMetric;
 import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.HealthMetricRepository;
@@ -30,6 +33,14 @@ public class ConditionMonitoringService
         IndustrialAsset asset = assetRepository.findById(dto.getAssetId())
             .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
         
+        HealthMetric metric = HealthMetric.builder()
+            .asset(asset)
+            .recordedAt(LocalDateTime.now())
+            .healthScore(dto.getHealthScore())
+            .vibrationLevel(dto.getVibrationLevel())
+            .temperatureCelsius(dto.getTemperatureCelsius())
+            .build();
         
+        metricRepository.save(metric);
     }
 }
