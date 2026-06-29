@@ -29,8 +29,14 @@ public class MaintenanceService
         return logRepository.findAll();
     }
 
-    public MaintenanceSchedule scheduleMaintenance(ScheduleRequestDto dto)
+    // public MaintenanceSchedule scheduleMaintenance(ScheduleRequestDto dto)
+    // {
+
+    // }
+
+    
+    public void deleteLog(Long id)
     {
-        
+        logRepository.deleteById(id);
     }
 }
