@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,9 @@ public class AssetController
         return service.getDashboardStats();
     }
 
-    @GetMapping("/")
-    public ResponseEntity<Page<IndustrialAsset>>
+    @GetMapping
+    public ResponseEntity<Page<IndustrialAsset>>getAllAssets(Pageable pageable)
+    {
+        return ResponseEntity.ok(assetService.getAllAssets(pageable))
+    }
 }
