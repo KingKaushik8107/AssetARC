@@ -24,9 +24,8 @@ public class AssetService
 
     public ResponseEntity<DashboardStatsDto> getDashboardStats()
     {
-
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDashboardStats'");
+        var asset = repo.findAll();
+        long totalAsset = 
     }
 
     public Page<IndustrialAsset> getAllAssets(Pageable pageable)
@@ -76,6 +75,8 @@ public class AssetService
     public void decommisionAsset(Long id)
     {
         IndustrialAsset asset = repo.findById(id)
-            .orElseThrow()
+            .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
+           
+        asset.setCurrentStatus(AssetStatus.DECOMMISSIONED);
     }
 }
