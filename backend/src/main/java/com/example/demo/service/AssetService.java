@@ -22,21 +22,17 @@ public class AssetService
     public ResponseEntity<DashboardStatsDto> getDashboardStats()
     {
 
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDashboardStats'");
     }
 
     public Page<IndustrialAsset> getAllAssets(Pageable pageable)
     {
         return(repo.findAll(pageable));
 
-
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'getAllAssets'");
     }
 
-    public ResponseEntity<IndustrialAsset> getAssetById(Long id)
+    public IndustrialAsset getAssetById(Long id)
     {
-        return(repo.findById(id)).orElseThrow(ResourceNotFoundException("Asset not found"));
+        return(repo.findById(id))
+            .orElseThrow(()-> new ResourceNotFoundException("Asset not found"));
     }
 }
