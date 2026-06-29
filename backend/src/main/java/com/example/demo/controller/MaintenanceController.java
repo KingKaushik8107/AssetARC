@@ -22,7 +22,7 @@ public class MaintenanceController
     @GetMapping("/schedules")
     public ResponseEntity<List<MaintenanceSchedule>> getSchedules()
     {
-        ResponseEntity.ok(service.getUpcomingSchedules());
+        return ResponseEntity.ok(service.getUpcomingSchedules());
 
     }
 
@@ -50,7 +50,7 @@ public class MaintenanceController
     // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
     public ResponseEntity<String> deleteLog(@PathVariable Long id)
     {
-        service.deleteLog(id)
+        service.deleteLog(id);
         return ResponseEntity.ok("MaintenanceLog deleted successfully");
     }
 }
