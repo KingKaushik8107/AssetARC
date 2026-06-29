@@ -35,7 +35,8 @@ public class DashboardService
 
             for (IndustrialAsset asset:assets)
             {
-                String status = asset.
+                String status = asset.getCurrentStatus().name();
+                statusDistribution.put(status, null)
             }
     }
 }
