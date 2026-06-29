@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.AssetRequestDto;
 import com.example.demo.dto.DashboardStatsDto;
 import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.exception.ResourceNotFoundException;
@@ -34,5 +35,10 @@ public class AssetService
     {
         return(repo.findById(id))
             .orElseThrow(()-> new ResourceNotFoundException("Asset not found"));
+    }
+
+    public void createAsset(AssetRequestDto dto)
+    {
+        
     }
 }

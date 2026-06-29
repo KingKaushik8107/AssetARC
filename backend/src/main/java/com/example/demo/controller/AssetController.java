@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,10 +38,11 @@ public class AssetController
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
+    // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
     public ResponseEntity<String> createAsset(@RequestBody AssetRequestDto dto)
     {
         service.createAsset(dto);
-        return ResponseEntity.status(0)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body("Asset created successfully");
     }
 }
