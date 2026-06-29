@@ -38,8 +38,5 @@ public class AssetService
     public ResponseEntity<IndustrialAsset> getAssetById(Long id)
     {
         return(repo.findById(id)).orElseThrow(ResourceNotFoundException("Asset not found"));
-
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'getAssetById'");
     }
 }
