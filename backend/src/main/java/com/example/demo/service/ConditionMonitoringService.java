@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.dto.HealthMetricDto;
 import com.example.demo.entity.HealthMetric;
 import com.example.demo.entity.IndustrialAsset;
+import com.example.demo.entity.MaintenanceSchedule;
+import com.example.demo.enums.MaintenanceType;
+import com.example.demo.enums.Priority;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.HealthMetricRepository;
 import com.example.demo.repository.IndustrialAssetRepository;
@@ -42,5 +46,15 @@ public class ConditionMonitoringService
             .build();
         
         metricRepository.save(metric);
+
+        if (dto.getHealthScore() < 40)
+        {
+            MaintenanceSchedule schedule = MaintenanceSchedule.builder()
+                .asset(asset)
+                .plannedDate(LocalDate.now())
+                .maintenanceType(MaintenanceType.REPAIR)
+                .priority(Priority.CRITICAL)
+                .status(MaintenanceSta)
+        }
     }
 }
