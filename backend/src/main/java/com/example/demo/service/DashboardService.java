@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,10 @@ public class DashboardService
         List<IndustrialAsset> assets = assetRepository.findAll();
 
         BigDecimal totalValue = assets.stream()
-            .map(In)
+            .map(IndustrialAsset::getPurchasePrice)
+            .filter(price -> price != null)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+            Map<String, Long> status
     }
 }
