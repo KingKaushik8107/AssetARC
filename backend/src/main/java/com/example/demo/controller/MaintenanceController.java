@@ -49,5 +49,8 @@ public class MaintenanceController
     @DeleteMapping("/logs/{id}")
     // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
     public ResponseEntity<String> deleteLog(@PathVariable Long id)
-
+    {
+        service.deleteLog(id)
+        return ResponseEntity.ok("MaintenanceLog deleted successfully");
+    }
 }
