@@ -20,5 +20,6 @@ public class AssetController
         return service.getDashboardStats();
     }
 
-    @GetMapping("")
+    @GetMapping("/")
+    public ResponseEntity<Page<IndustrialAsset>>
 }
