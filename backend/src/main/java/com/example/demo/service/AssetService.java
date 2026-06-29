@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.function.Supplier;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,10 +37,9 @@ public class AssetService
 
     public ResponseEntity<IndustrialAsset> getAssetById(Long id)
     {
-        return(repo.findById(id)).orElseThrow(ResourceNotFoundException)
+        return(repo.findById(id)).orElseThrow(ResourceNotFoundException("Asset not found"));
 
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAssetById'");
+        // throw new UnsupportedOperationException("Unimplemented method 'getAssetById'");
     }
-    
 }
