@@ -57,5 +57,11 @@ public class AssetService
     }
 
     @Transactional
-    public IndustrialAsset upda
+    public IndustrialAsset updateAsset(Long id, AssetRequestDto dto)
+    {
+        IndustrialAsset asset = repo.findById(id)
+            .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
+        
+            
+    }
 }
