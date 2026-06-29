@@ -35,6 +35,11 @@ public class MaintenanceController
     // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
     public ResponseEntity<MaintenanceSchedule> scheduleMaintenance(@RequestBody ScheduleRequestDto dto)
     {
-        return ResponseEntity.ok(service.scheduleMaintenance(dto))
+        return ResponseEntity.ok(service.scheduleMaintenance(dto));
     }
+    
+    @PostMapping("/complete")
+    // @PreAuthorize("hasAnyRole('MAINTENANCE_TECHNICIAN')")
+    public ResponseEntity<MaintenanceLog> completeMaintenance(@RequestBody LogRe)
+    
 }
