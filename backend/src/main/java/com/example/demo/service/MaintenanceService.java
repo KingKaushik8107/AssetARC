@@ -42,7 +42,15 @@ public class MaintenanceService
         IndustrialAsset asset = assetRepository.findById(dto.getAssetId())
             .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
 
-        Main
+        MaintenanceSchedule schedule = MaintenanceSchedule.builder()
+            .asset(asset)
+            .plannedDate(dto.getPlannedDate())
+            .maintenanceType(dto.getMaintenanceType())
+            .priority(dto.getPriority())
+            .status(ScheduleStatus.PENDING)
+            .build()
+
+        if (dto.getPriority().name().equals("HIGH"))
     }
 
     @Transactional
