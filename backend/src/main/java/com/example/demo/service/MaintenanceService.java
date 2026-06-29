@@ -55,11 +55,13 @@ public class MaintenanceService
             || dto.getPriority().name().equals("CRITICAL"))
         {
             asset.setCurrentStatus(AssetStatus.UNDER_MAINTENANCE);
-            assetRepository.save(schedule);
+            assetRepository.save(asset);
         }
         return scheduleRepository.save(schedule);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public MaintenanceLog completeMaintenanceTask
 
 
     @Transactional
