@@ -17,6 +17,8 @@ public class AssetController
     @GetMapping("/register")
     public ResponseEntity<DashboardStatsDto> getStats()
     {
-        return 
+        return service.getDashboardStats();
     }
+
+    @GetMapping("")
 }
