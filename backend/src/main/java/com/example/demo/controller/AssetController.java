@@ -51,6 +51,13 @@ public class AssetController
     public ResponseEntity<String> updateAsset(@PathVariable Long id, @RequestBody AssetRequestDto dto)
     {
         service.updateAsset(id, dto);
-        return
+        return ResponseEntity.ok("Asset updated successfully");
+    }
+    
+    @DeleteMapping("/{id}")
+    // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
+    public ResponseEntity<String> deleteAsset(@PathVariable Long id)
+    {
+        service.
     }
 }
