@@ -39,7 +39,13 @@ public class AssetService
 
     public void createAsset(AssetRequestDto dto)
     {
-        IndustrialAsset asset = IndustrialAsset.builder().assetTag(dto.getAssetTag())
-            .name(dto.)
+        IndustrialAsset asset = IndustrialAsset.builder()
+            .assetTag(dto.getAssetTag())
+            .name(dto.getName())
+            .category(dto.getCategory())
+            .installDate(dto.getInstallDate())
+            .purchasePrice(dto.getPurchaseprice())
+            .expectedLifespanYears(dto.getExpectedLifespanYears())
+            .currentStatus(As)
     }
 }
