@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.demo.dto.DashboardStatsDto;
 import com.example.demo.service.DashboardService;
 
 @RestController
@@ -13,5 +15,10 @@ public class DashboardController
     DashboardService service;
 
     @GetMapping("/stats")
-    @PreAuthorize("hasAnyRole('ASSET_MANAGER','OPERATIONS_SUPERVISOR','')")
+    // @PreAuthorize("hasAnyRole('ASSET_MANAGER','OPERATIONS_SUPERVISOR','MAINTENANCE_TECHNICIAN','SYSTEM_ADMIN')")
+    public ResponseEntity<DashboardStatsDto> getDashboardStats()
+    {
+        DashboardStatsDto stats = service.getDashboardStats();
+        return ResponseEntity.ok(stats);
+    }
 }
