@@ -32,6 +32,9 @@ public class AssetController
     @GetMapping("/{id}")
     public ResponseEntity<IndustrialAsset> getAssetById(@PathVariable Long id)
     {
-        return ResponseEntity(service.getAssetById(id);
+        return ResponseEntity.ok(service.getAssetById(id));
     }
+
+    @PostMapping
+    @PreAuthorize("hasa")
 }
