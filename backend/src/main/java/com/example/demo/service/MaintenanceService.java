@@ -10,6 +10,7 @@ import com.example.demo.dto.ScheduleRequestDto;
 import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.entity.MaintenanceLog;
 import com.example.demo.entity.MaintenanceSchedule;
+import com.example.demo.entity.SystemUser;
 import com.example.demo.enums.AssetStatus;
 import com.example.demo.enums.ScheduleStatus;
 import com.example.demo.exception.BusinessValidationException;
@@ -17,6 +18,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 import com.example.demo.repository.MaintenanceLogRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
+import com.example.demo.repository.SystemUserRepository;
 
 import jakarta.transaction.*;
 
@@ -27,6 +29,7 @@ public class MaintenanceService
     MaintenanceScheduleRepository scheduleRepository;
     MaintenanceLogRepository logRepository;
     IndustrialAssetRepository assetRepository;
+    SystemUserRepository userRepository;
 
 
     public List<MaintenanceSchedule> getUpcomingSchedules()
@@ -72,7 +75,9 @@ public class MaintenanceService
         {
             throw new BusinessValidationException("Task is already processed or cancelled");
         }
-        
+
+        SystemUser technician = userRepository.findById(dto.getTechnicianId())
+            .orElseThrow( ()-> new ResourceNotFoundException("Technician not found"))
     }
 
 
