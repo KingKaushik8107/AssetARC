@@ -50,7 +50,8 @@ public class AssetService
                 
             return DashboardStatsDto.builder()
                 .totalAssets(totalAsset)
-                .maintenanceC
+                .activeMaintenanceCount(maintenanceCount)
+                .a
         
     }
 
