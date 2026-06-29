@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.ScheduleRequestDto;
+import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.entity.MaintenanceLog;
 import com.example.demo.entity.MaintenanceSchedule;
 import com.example.demo.enums.ScheduleStatus;
+import com.example.demo.repository.IndustrialAssetRepository;
 import com.example.demo.repository.MaintenanceLogRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
 
@@ -20,6 +22,8 @@ public class MaintenanceService
     @Autowired
     MaintenanceScheduleRepository scheduleRepository;
     MaintenanceLogRepository logRepository;
+    IndustrialAssetRepository assetRepository;
+
 
     public List<MaintenanceSchedule> getUpcomingSchedules()
     {
@@ -31,10 +35,11 @@ public class MaintenanceService
         return logRepository.findAll();
     }
 
-    // public MaintenanceSchedule scheduleMaintenance(ScheduleRequestDto dto)
-    // {
+    @Transactional
+    public MaintenanceSchedule scheduleMaintenance(ScheduleRequestDto dto)
+    {
 
-    // }
+    }
 
     @Transactional
     public void deleteLog(Long id)
