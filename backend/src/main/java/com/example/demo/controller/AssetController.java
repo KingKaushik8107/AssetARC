@@ -32,6 +32,6 @@ public class AssetController
     @GetMapping("/{id}")
     public ResponseEntity<IndustrialAsset> getAssetById(@PathVariable Long id)
     {
-        return service.getAssetById(id);
+        return ResponseEntity(service.getAssetById(id);
     }
 }

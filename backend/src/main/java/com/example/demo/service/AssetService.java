@@ -1,7 +1,5 @@
 package com.example.demo.service;
 
-import java.util.function.Supplier;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +20,8 @@ public class AssetService
     public ResponseEntity<DashboardStatsDto> getDashboardStats()
     {
 
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDashboardStats'");
     }
 
     public Page<IndustrialAsset> getAllAssets(Pageable pageable)
