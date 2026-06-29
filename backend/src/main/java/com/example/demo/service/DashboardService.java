@@ -36,7 +36,7 @@ public class DashboardService
             for (IndustrialAsset asset:assets)
             {
                 String status = asset.getCurrentStatus().name();
-                statusDistribution.put(status, null)
+                statusDistribution.put(status, statusDistribution.getOrDefault(status, 0L)+1);
             }
     }
 }
