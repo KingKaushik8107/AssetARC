@@ -1,5 +1,10 @@
 package com.example.demo.controller;
 
-public class DashboardController {
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/dashboard")
+public class DashboardController
+{
     
 }
