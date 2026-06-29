@@ -97,7 +97,7 @@ public class AssetService
     }
 
     @Transactional
-    public void decommisionAsset(Long id)
+    public void decommissionAsset(Long id)
     {
         IndustrialAsset asset = repo.findById(id)
             .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));

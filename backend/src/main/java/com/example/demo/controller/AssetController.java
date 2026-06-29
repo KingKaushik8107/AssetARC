@@ -58,7 +58,7 @@ public class AssetController
     // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
     public ResponseEntity<String> deleteAsset(@PathVariable Long id)
     {
-        service.decommisionAsset(id);
+        service.decommissionAsset(id);
         return ResponseEntity.ok("Asset deleted successfully");
     }
 }
