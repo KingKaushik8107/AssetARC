@@ -18,8 +18,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "system_users")
-public class SystemUser implements UserDetails {
-
+public class SystemUser implements UserDetails
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,6 +33,8 @@ public class SystemUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
