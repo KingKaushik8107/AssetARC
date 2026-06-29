@@ -13,6 +13,8 @@ import com.example.demo.enums.AssetStatus;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class AssetService
 {
@@ -38,7 +40,7 @@ public class AssetService
             .orElseThrow(()-> new ResourceNotFoundException("Asset not found"));
     }
 
-    public void createAsset(AssetRequestDto dto)
+    public IndustrialAsset createAsset(AssetRequestDto dto)
     {
         IndustrialAsset asset = IndustrialAsset.builder()
             .assetTag(dto.getAssetTag())
@@ -53,4 +55,7 @@ public class AssetService
 
         return repo.save(asset);
     }
+
+    @Transactional
+    public IndustrialAsset upda
 }
