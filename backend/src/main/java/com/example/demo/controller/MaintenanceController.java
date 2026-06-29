@@ -27,6 +27,10 @@ public class MaintenanceController
     @GetMapping("/logs")
     public ResponseEntity<List<MaintenanceLog>>getLogs()
     {
-        return ResponseEntity
+        return ResponseEntity.ok(service.getAllLogs());
     }
+
+    @PostMapping("/schedule")
+    // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
+    
 }
