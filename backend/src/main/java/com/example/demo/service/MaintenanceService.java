@@ -49,16 +49,18 @@ public class MaintenanceService
             .maintenanceType(dto.getMaintenanceType())
             .priority(dto.getPriority())
             .status(ScheduleStatus.PENDING)
-            .build()
+            .build();
 
-        if (dto.getPriority().name().equals("HIGH") || dto.getPriority().name().equals("CRITICAL"))
+        if (dto.getPriority().name().equals("HIGH") 
+            || dto.getPriority().name().equals("CRITICAL"))
         {
             asset.setCurrentStatus(AssetStatus.UNDER_MAINTENANCE);
             assetRepository.save(schedule);
         }
+        return scheduleRepository.save(schedule);
     }
 
-    
+
 
     @Transactional
     public void deleteLog(Long id)
