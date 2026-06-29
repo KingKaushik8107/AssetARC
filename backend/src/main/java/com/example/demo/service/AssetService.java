@@ -30,7 +30,9 @@ public class AssetService
             .filter(a -> a.getCurrentStatus() == AssetStatus.UNDER_MAINTENANCE).count();
 
         double avgHealth = asset.stream()
-            .mapToDouble(a -> a.getCurrentHealth() == null ? 100 : a.getCurrentHealth()).average().orElse(100);
+            .mapToDouble(a -> a.getCurrentHealth() == null ? 100 : a.getCurrentHealth())
+            .average()
+            .orElse(100);
         
         
     }
