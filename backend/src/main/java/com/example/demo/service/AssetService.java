@@ -27,10 +27,12 @@ public class AssetService
 
     @Autowired
     public AssetService(IndustrialAssetRepository repo,
-                        MaintenanceScheduleRepository scheduleRepository) {
+                        MaintenanceScheduleRepository scheduleRepository)
+    {
         this.repo = repo;
         this.scheduleRepository = scheduleRepository;
     }
+
     public DashboardStatsDto getDashboardStats()
     {
         var asset = repo.findAll();
@@ -111,6 +113,6 @@ public class AssetService
             .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
            
         asset.setCurrentStatus(AssetStatus.DECOMMISSIONED);
-        // repo.save(asset);
+        repo.save(asset);
     }
 }
