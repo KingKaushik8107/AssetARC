@@ -15,15 +15,22 @@ import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.enums.AssetStatus;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
+import com.example.demo.repository.MaintenanceScheduleRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class AssetService
 {
-    @Autowired
-    IndustrialAssetRepository repo;
+    private final IndustrialAssetRepository repo;
+    private final MaintenanceScheduleRepository scheduleRepository;
 
+    @Autowired
+    public AssetService(IndustrialAssetRepository repo,
+                        MaintenanceScheduleRepository scheduleRepository) {
+        this.repo = repo;
+        this.scheduleRepository = scheduleRepository;
+    }
     public DashboardStatsDto getDashboardStats()
     {
         var asset = repo.findAll();
