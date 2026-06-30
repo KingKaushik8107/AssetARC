@@ -87,6 +87,7 @@ public class AssetService
         IndustrialAsset asset = repo.findById(id)
             .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
         
+        asset.setAssetTag(dto.getAssetTag());
         asset.setName(dto.getName());
         asset.setCategory(dto.getCategory());
         asset.setInstallDate(dto.getInstallDate());
