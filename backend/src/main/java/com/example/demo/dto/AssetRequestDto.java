@@ -17,5 +17,4 @@ public class AssetRequestDto
     private LocalDate installDate;
     private BigDecimal purchaseprice;
     private Integer expectedLifespanYears;
-
 }
