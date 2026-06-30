@@ -116,6 +116,9 @@ public class MaintenanceService
     @Transactional
     public void deleteLog(Long id)
     {
-        logRepository.deleteById(id);
+        MaintenanceLog log = logRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Maintenance log not found"));
+
+        logRepository.delete(log);
     }
 }
