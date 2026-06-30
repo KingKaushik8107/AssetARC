@@ -104,6 +104,6 @@ public class AssetService
             .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
            
         asset.setCurrentStatus(AssetStatus.DECOMMISSIONED);
-        repo.save(asset);
+        // repo.save(asset);
     }
 }
