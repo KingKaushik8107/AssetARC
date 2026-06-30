@@ -17,9 +17,14 @@ import com.example.demo.service.MaintenanceService;
 @RequestMapping("/api/maintenance")
 public class MaintenanceController
 {
-    @Autowired
-    MaintenanceService service;
+    private final MaintenanceService service;
 
+    @Autowired
+    public MaintenanceController(MaintenanceService service)
+    {
+        this.service = service;
+    }
+    
     @GetMapping("/schedules")
     public ResponseEntity<List<MaintenanceSchedule>> getSchedules()
     {

@@ -17,8 +17,13 @@ import com.example.demo.service.AssetService;
 @RequestMapping("/api/assets")
 public class AssetController
 {
+    private final AssetService service;
+
     @Autowired
-    AssetService service;
+    public AssetController(AssetService service)
+    {
+        this.service = service;
+    }
 
     @GetMapping("/stats")
     public ResponseEntity<DashboardStatsDto> getStats()
