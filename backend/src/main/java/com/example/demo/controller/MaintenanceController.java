@@ -57,6 +57,6 @@ public class MaintenanceController
     public ResponseEntity<String> deleteLog(@PathVariable Long id)
     {
         service.deleteLog(id);
-        return ResponseEntity.ok("MaintenanceLog deleted successfully");
+        return ResponseEntity.ok("MaintenanceLog deleted successfully.");
     }
 }

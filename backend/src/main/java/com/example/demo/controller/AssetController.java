@@ -49,7 +49,7 @@ public class AssetController
     {
         service.createAsset(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body("Asset created successfully");
+            .body("Asset created successfully.");
     }
 
     @PutMapping("/{id}")
@@ -57,7 +57,7 @@ public class AssetController
     public ResponseEntity<String> updateAsset(@PathVariable Long id, @RequestBody AssetRequestDto dto)
     {
         service.updateAsset(id, dto);
-        return ResponseEntity.ok("Asset updated successfully");
+        return ResponseEntity.ok("Asset updated successfully.");
     }
     
     @DeleteMapping("/{id}")
@@ -65,6 +65,6 @@ public class AssetController
     public ResponseEntity<String> deleteAsset(@PathVariable Long id)
     {
         service.decommissionAsset(id);
-        return ResponseEntity.ok("Asset deleted successfully");
+        return ResponseEntity.ok("Asset deleted successfully.");
     }
 }
