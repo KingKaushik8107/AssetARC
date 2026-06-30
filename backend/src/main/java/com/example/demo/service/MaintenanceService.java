@@ -26,18 +26,24 @@ import com.example.demo.repository.SystemUserRepository;
 @Service
 public class MaintenanceService
 {
-    @Autowired
-    MaintenanceScheduleRepository scheduleRepository;
+    private final MaintenanceScheduleRepository scheduleRepository;
+    private final MaintenanceLogRepository logRepository;
+    private final IndustrialAssetRepository assetRepository;
+    private final SystemUserRepository userRepository;
 
     @Autowired
-    MaintenanceLogRepository logRepository;
+    public MaintenanceService(
+            MaintenanceScheduleRepository scheduleRepository,
+            MaintenanceLogRepository logRepository,
+            IndustrialAssetRepository assetRepository,
+            SystemUserRepository userRepository)
+    {
 
-    @Autowired
-    IndustrialAssetRepository assetRepository;
-
-    @Autowired
-    SystemUserRepository userRepository;
-
+        this.scheduleRepository = scheduleRepository;
+        this.logRepository = logRepository;
+        this.assetRepository = assetRepository;
+        this.userRepository = userRepository;
+    }
 
     public List<MaintenanceSchedule> getUpcomingSchedules()
     {
