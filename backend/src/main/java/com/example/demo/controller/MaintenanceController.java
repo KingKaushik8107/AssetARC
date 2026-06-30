@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.LogRequestDto;
@@ -33,21 +34,21 @@ public class MaintenanceController
     }
 
     @PostMapping("/schedule")
-    // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
+    @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
     public ResponseEntity<MaintenanceSchedule> scheduleMaintenance(@RequestBody ScheduleRequestDto dto)
     {
         return ResponseEntity.ok(service.scheduleMaintenance(dto));
     }
     
     @PostMapping("/complete")
-    // @PreAuthorize("hasAnyRole('MAINTENANCE_TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('MAINTENANCE_TECHNICIAN')")
     public ResponseEntity<MaintenanceLog> completeMaintenance(@RequestBody LogRequestDto dto)
     {
         return ResponseEntity.ok(service.completeMaintenanceTask(dto));
     }
     
     @DeleteMapping("/logs/{id}")
-    // @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
+    @PreAuthorize("hasAnyRole('ASSET_MANAGER','SYSTEM_ADMIN')")
     public ResponseEntity<String> deleteLog(@PathVariable Long id)
     {
         service.deleteLog(id);
