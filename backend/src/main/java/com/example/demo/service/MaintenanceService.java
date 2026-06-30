@@ -81,7 +81,7 @@ public class MaintenanceService
     @Transactional(rollbackFor = Exception.class)
     public MaintenanceLog completeMaintenanceTask(LogRequestDto dto)
     {
-        MaintenanceSchedule schedule = scheduleRepository.findById(dto.getScheduled())
+        MaintenanceSchedule schedule = scheduleRepository.findById(dto.getScheduleId())
             .orElseThrow( ()-> new ResourceNotFoundException("Schedule not found"));
         
         if (schedule.getStatus() != ScheduleStatus.PENDING)

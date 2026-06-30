@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 public class LogRequestDto
 {
-    private Long scheduled;
+    private Long scheduleId;
     private String workDescription;
     private BigDecimal costIncurred;
     private Long technicianId;
