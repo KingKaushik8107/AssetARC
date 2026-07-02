@@ -20,13 +20,15 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class ConditionMonitoringService {
+public class ConditionMonitoringService
+{
     private final HealthMetricRepository repository;
     private final IndustrialAssetRepository assetRepository;
     private final MaintenanceScheduleRepository scheduleRepository;
 
     @Transactional
-    public void recordHealthMetric(HealthMetricDto dto) {
+    public void recordHealthMetric(HealthMetricDto dto)
+    {
         IndustrialAsset asset = assetRepository.findById(dto.getAssetId())
                 .orElseThrow(() -> new ResourceNotFoundException("Asset not found"));
 
@@ -40,7 +42,8 @@ public class ConditionMonitoringService {
         repository.save(metric);
 
         // Auto-trigger repair if health is critical
-        if (dto.getHealthScore() < 40) {
+        if (dto.getHealthScore() < 40)
+        {
             MaintenanceSchedule emergencyRepair = MaintenanceSchedule.builder()
                     .asset(asset)
                     .plannedDate(LocalDate.now())
@@ -48,6 +51,7 @@ public class ConditionMonitoringService {
                     .priority(Priority.CRITICAL)
                     .status(ScheduleStatus.PENDING)
                     .build();
+            
             scheduleRepository.save(emergencyRepair);
 
             asset.setCurrentStatus(AssetStatus.UNDER_MAINTENANCE);

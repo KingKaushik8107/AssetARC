@@ -14,19 +14,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthService
+{
     private final SystemUserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthResponseDto register(RegisterDto request) {
+    public AuthResponseDto register(RegisterDto request)
+    {
         var user = SystemUser.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .build();
+        
         repository.save(user);
+
         var jwtToken = jwtService.generateToken(user);
         return AuthResponseDto.builder()
                 .token(jwtToken)
@@ -36,7 +40,8 @@ public class AuthService {
                 .build();
     }
 
-    public AuthResponseDto authenticate(AuthRequestDto request) {
+    public AuthResponseDto authenticate(AuthRequestDto request)
+    {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),

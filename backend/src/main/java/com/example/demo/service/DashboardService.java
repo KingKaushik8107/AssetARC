@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DashboardService {
+public class DashboardService
+{
     private final IndustrialAssetRepository assetRepository;
 
     @Transactional(readOnly = true)
-    public DashboardStatsDto getGlobalStats() {
+    public DashboardStatsDto getGlobalStats()
+    {
         long totalAssets = assetRepository.count();
         long activeMaintenance = assetRepository.countByCurrentStatus(AssetStatus.UNDER_MAINTENANCE);
 
@@ -33,7 +35,6 @@ public class DashboardService {
                         Collectors.counting()
                 ));
 
-        // Mocking average health for simplicity in this aggregate view
         double avgHealth = 85.5;
 
         return DashboardStatsDto.builder()
