@@ -38,6 +38,14 @@ public class IndustrialAsset
     @Column(name = "expected_lifespan_years",nullable = false)
     private int expectedLifespanYears;
 
+
+    public enum AssetStatus
+    {
+        ACTIVE,
+        UNDER_MAINTENANCE,
+        DECOMMISSIONED
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "current_status",nullable = false)
     private AssetStatus currentStatus;

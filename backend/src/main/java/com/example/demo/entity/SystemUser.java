@@ -31,6 +31,15 @@ public class SystemUser implements UserDetails
     @Column(nullable = false)
     private String password;
 
+
+    public enum Role
+    {
+        ASSET_MANAGER,
+        MAINTENANCE_TECHNICIAN,
+        OPERATIONS_SUPERVISOR,
+        SYSTEM_ADMIN
+    }
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
