@@ -23,7 +23,8 @@ import lombok.*;
 
 @Service
 @RequiredArgsConstructor
-public class AssetService {
+public class AssetService
+{
     private final IndustrialAssetRepository repository;
     private final MaintenanceScheduleRepository scheduleRepository;
 
