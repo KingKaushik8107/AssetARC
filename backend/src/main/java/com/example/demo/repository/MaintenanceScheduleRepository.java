@@ -1,7 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.MaintenanceSchedule;
-import com.example.demo.enums.ScheduleStatus;
+import com.example.demo.entity.MaintenanceSchedule.ScheduleStatus;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;

@@ -2,8 +2,8 @@ package com.example.demo.dto;
 
 import java.time.LocalDate;
 
-import com.example.demo.enums.MaintenanceType;
-import com.example.demo.enums.Priority;
+import com.example.demo.entity.MaintenanceSchedule.MaintenanceType;
+import com.example.demo.entity.MaintenanceSchedule.Priority;
 
 import lombok.*;
 

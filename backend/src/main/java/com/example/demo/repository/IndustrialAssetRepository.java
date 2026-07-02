@@ -3,7 +3,7 @@ package com.example.demo.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.demo.entity.IndustrialAsset;
-import com.example.demo.enums.AssetStatus;
+import com.example.demo.entity.IndustrialAsset.AssetStatus;
 
 import java.util.Optional;
 
