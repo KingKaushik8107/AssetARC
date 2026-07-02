@@ -4,6 +4,9 @@ import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.dto.HealthMetricDto;
 import com.example.demo.entity.HealthMetric;
 import com.example.demo.entity.MaintenanceSchedule;
+import com.example.demo.enums.AssetStatus;
+import com.example.demo.enums.MaintenanceType;
+import com.example.demo.enums.Priority;
 import com.example.demo.enums.ScheduleStatus;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.HealthMetricRepository;
@@ -47,7 +50,7 @@ public class ConditionMonitoringService {
                     .build();
             scheduleRepository.save(emergencyRepair);
 
-            asset.setCurrentStatus(IndustrialAsset.AssetStatus.UNDER_MAINTENANCE);
+            asset.setCurrentStatus(AssetStatus.UNDER_MAINTENANCE);
             assetRepository.save(asset);
         }
     }
