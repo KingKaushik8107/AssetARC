@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,8 +13,8 @@ import com.example.demo.dto.AssetRequestDto;
 import com.example.demo.dto.DashboardStatsDto;
 import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.entity.MaintenanceSchedule;
-import com.example.demo.enums.AssetStatus;
-import com.example.demo.enums.ScheduleStatus;
+import com.example.demo.entity.IndustrialAsset.AssetStatus;
+import com.example.demo.entity.MaintenanceSchedule.ScheduleStatus;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
