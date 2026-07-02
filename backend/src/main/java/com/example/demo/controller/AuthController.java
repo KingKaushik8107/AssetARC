@@ -1,32 +1,31 @@
 package com.example.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import com.example.demo.dto.AuthRequestDto;
 import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.RegisterDto;
 import com.example.demo.service.AuthService;
 
+import lombok.*;
+
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController
 {
-    @Autowired
-    AuthService service;
+    private final AuthService service;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDto> register(@RequestBody RegisterDto dto)
+    public ResponseEntity<AuthResponseDto> register(@RequestBody RegisterDto request)
     {
-        AuthResponseDto response = service.register(dto);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(service.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> login(@RequestBody AuthRequestDto dto)
+    public ResponseEntity<AuthResponseDto> authenticate(@RequestBody AuthRequestDto request)
     {
-        AuthResponseDto response = service.authenticate(dto);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(service.authenticate(request));
     }
 }
