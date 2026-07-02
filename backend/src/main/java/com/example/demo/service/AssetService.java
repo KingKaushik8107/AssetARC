@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,99 +20,76 @@ import com.example.demo.repository.MaintenanceScheduleRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class AssetService
-{
-    private final IndustrialAssetRepository repo;
+@RequiredArgsConstructor
+public class AssetService {
+    private final IndustrialAssetRepository repository;
     private final MaintenanceScheduleRepository scheduleRepository;
 
-    @Autowired
-    public AssetService(IndustrialAssetRepository repo,
-                        MaintenanceScheduleRepository scheduleRepository)
-    {
-        this.repo = repo;
-        this.scheduleRepository = scheduleRepository;
-    }
+    public DashboardStatsDto getDashboardStats() {
+        List<IndustrialAsset> all = repository.findAll();
 
-    public DashboardStatsDto getDashboardStats()
-    {
-        var asset = repo.findAll();
-        long totalAsset = asset.size();
-        long maintenanceCount = asset.stream()
-            .filter(a -> a.getCurrentStatus() == AssetStatus.UNDER_MAINTENANCE).count();
+        long total = all.size();
+        long maintenance = all.stream()
+                .filter(a -> a.getCurrentStatus() == AssetStatus.UNDER_MAINTENANCE).count();
+        double avgHealth = all.stream().mapToInt(a -> a.getCurrentHealth() != null ? a.getCurrentHealth() : 100)
+                .average().orElse(0.0);
+        BigDecimal totalValue = all.stream().map(IndustrialAsset::getPurchasePrice).reduce(BigDecimal.ZERO,
+                BigDecimal::add);
 
-        double avgHealth = asset.stream()
-            .mapToDouble(a -> a.getCurrentHealth())
-            .average()
-            .orElse(100);
-        
-        BigDecimal totalFleetValue = asset.stream()
-            .map(IndustrialAsset::getPurchasePrice)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-            
-        Map<String,Long> statusDistribution = asset.stream()
-            .collect(Collectors.groupingBy(
-                a -> a.getCurrentStatus().name(),Collectors.counting()
-            ));
-                
+        Map<String, Long> distribution = all.stream()
+                .collect(Collectors.groupingBy(a -> a.getCurrentStatus().name(), Collectors.counting()));
+
         return DashboardStatsDto.builder()
-            .totalAssets(totalAsset)
-            .activeMaintenanceCount(maintenanceCount)
-            .averageHealthScore(avgHealth)
-            .totalFleetValue(totalFleetValue)
-            .statusDistribution(statusDistribution)
-            .build();
+                .totalAssets(total)
+                .activeMaintenanceCount(maintenance)
+                .averageHealthScore(avgHealth)
+                .totalFleetValue(totalValue)
+                .statusDistribution(distribution)
+                .build();
     }
 
-    public Page<IndustrialAsset> getAllAssets(Pageable pageable)
-    {
-        return(repo.findAll(pageable));
+    public Page<IndustrialAsset> getAllAssets(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
-    public IndustrialAsset getAssetById(Long id)
-    {
-        return(repo.findById(id))
-            .orElseThrow(()-> new ResourceNotFoundException("Asset not found"));
+    public IndustrialAsset getAssetById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Asset not found"));
     }
 
-    public IndustrialAsset createAsset(AssetRequestDto dto)
-    {
+    public IndustrialAsset createAsset(AssetRequestDto dto) {
         IndustrialAsset asset = IndustrialAsset.builder()
-            .assetTag(dto.getAssetTag())
-            .name(dto.getName())
-            .category(dto.getCategory())
-            .installDate(dto.getInstallDate())
-            .purchasePrice(dto.getPurchaseprice())
-            .expectedLifespanYears(dto.getExpectedLifespanYears())
-            .currentStatus(AssetStatus.ACTIVE)
-            .currentHealth(100)
-            .build();
-
-        return repo.save(asset);
+                .assetTag(dto.getAssetTag())
+                .name(dto.getName())
+                .category(dto.getCategory())
+                .installDate(dto.getInstallDate())
+                .purchasePrice(dto.getPurchasePrice())
+                .expectedLifespanYears(dto.getExpectedLifespanYears())
+                .currentStatus(IndustrialAsset.AssetStatus.ACTIVE)
+                .currentHealth(100)
+                .build();
+        return repository.save(asset);
     }
 
     @Transactional
-    public IndustrialAsset updateAsset(Long id, AssetRequestDto dto)
-    {
-        IndustrialAsset asset = repo.findById(id)
-            .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
-        
-        // asset.setAssetTag(dto.getAssetTag());
+    public IndustrialAsset updateAsset(Long id, AssetRequestDto dto) {
+        IndustrialAsset asset = getAssetById(id);
         asset.setName(dto.getName());
         asset.setCategory(dto.getCategory());
         asset.setInstallDate(dto.getInstallDate());
-        asset.setPurchasePrice(dto.getPurchaseprice());
+        asset.setPurchasePrice(dto.getPurchasePrice());
         asset.setExpectedLifespanYears(dto.getExpectedLifespanYears());
-
-        return repo.save(asset);
+        return repository.save(asset);
     }
 
     @Transactional
-    public void decommissionAsset(Long id)
-    {
-        IndustrialAsset asset = repo.findById(id)
-            .orElseThrow( ()-> new ResourceNotFoundException("Asset not found"));
-           
-        asset.setCurrentStatus(AssetStatus.DECOMMISSIONED);
-        repo.save(asset);
+    public void decommissionAsset(Long id) {
+        IndustrialAsset asset = getAssetById(id);
+        asset.setCurrentStatus(IndustrialAsset.AssetStatus.DECOMMISSIONED);
+        repository.save(asset);
+        List<MaintenanceSchedule> pendingSchedules = scheduleRepository.findByAssetIdAndStatus(id,
+                MaintenanceSchedule.ScheduleStatus.PENDING);
+        pendingSchedules.forEach(s -> s.setStatus(MaintenanceSchedule.ScheduleStatus.CANCELLED));
+        scheduleRepository.saveAll(pendingSchedules);
     }
 }
