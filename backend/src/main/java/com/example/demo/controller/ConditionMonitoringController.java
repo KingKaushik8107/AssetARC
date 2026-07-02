@@ -11,11 +11,13 @@ import lombok.*;
 @RestController
 @RequestMapping("/api/monitoring")
 @RequiredArgsConstructor
-public class ConditionMonitoringController {
+public class ConditionMonitoringController
+{
     private final ConditionMonitoringService service;
 
     @PostMapping("/metrics")
-    public ResponseEntity<Void> recordMetric(@RequestBody HealthMetricDto dto) {
+    public ResponseEntity<Void> recordMetric(@RequestBody HealthMetricDto dto)
+    {
         service.recordHealthMetric(dto);
         return ResponseEntity.ok().build();
     }
