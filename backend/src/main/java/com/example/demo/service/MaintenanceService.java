@@ -23,22 +23,26 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MaintenanceService {
+public class MaintenanceService
+{
     private final MaintenanceScheduleRepository scheduleRepository;
     private final MaintenanceLogRepository logRepository;
     private final IndustrialAssetRepository assetRepository;
     private final SystemUserRepository userRepository;
 
-    public List<MaintenanceSchedule> getUpcomingSchedules() {
+    public List<MaintenanceSchedule> getUpcomingSchedules()
+    {
         return scheduleRepository.findByStatus(ScheduleStatus.PENDING);
     }
 
-    public List<MaintenanceLog> getAllLogs() {
+    public List<MaintenanceLog> getAllLogs()
+    {
         return logRepository.findAll();
     }
 
     @Transactional
-    public MaintenanceSchedule scheduleMaintenance(ScheduleRequestDto dto) {
+    public MaintenanceSchedule scheduleMaintenance(ScheduleRequestDto dto)
+    {
         IndustrialAsset asset = assetRepository.findById(dto.getAssetId())
                 .orElseThrow(() -> new ResourceNotFoundException("Asset not found"));
 
@@ -50,8 +54,8 @@ public class MaintenanceService {
                 .status(ScheduleStatus.PENDING)
                 .build();
 
-        // If high priority, move asset to under maintenance immediately
-        if (dto.getPriority() == Priority.HIGH || dto.getPriority() == Priority.CRITICAL) {
+        if (dto.getPriority() == Priority.HIGH || dto.getPriority() == Priority.CRITICAL)
+        {
             asset.setCurrentStatus(AssetStatus.UNDER_MAINTENANCE);
             assetRepository.save(asset);
         }
@@ -60,18 +64,19 @@ public class MaintenanceService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public MaintenanceLog completeMaintenanceTask(LogRequestDto dto) {
+    public MaintenanceLog completeMaintenanceTask(LogRequestDto dto)
+    {
         MaintenanceSchedule schedule = scheduleRepository.findById(dto.getScheduleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Schedule not found"));
 
-        if (schedule.getStatus() != ScheduleStatus.PENDING) {
+        if (schedule.getStatus() != ScheduleStatus.PENDING)
+        {
             throw new BusinessValidationException("Task is already processed or cancelled");
         }
 
         SystemUser technician = userRepository.findById(dto.getTechnicianId())
                 .orElseThrow(() -> new ResourceNotFoundException("Technician not found"));
 
-        // 1. Create Log
         MaintenanceLog log = MaintenanceLog.builder()
                 .asset(schedule.getAsset())
                 .schedule(schedule)
@@ -82,11 +87,9 @@ public class MaintenanceService {
                 .build();
         logRepository.save(log);
 
-        // 2. Update Schedule
         schedule.setStatus(ScheduleStatus.COMPLETED);
         scheduleRepository.save(schedule);
 
-        // 3. Update Asset Status back to ACTIVE and Reset Health
         IndustrialAsset asset = schedule.getAsset();
         asset.setCurrentStatus(AssetStatus.ACTIVE);
         asset.setCurrentHealth(100);
@@ -94,8 +97,10 @@ public class MaintenanceService {
 
         return log;
     }
+
     @Transactional
-    public void deleteLog(Long id) {
+    public void deleteLog(Long id)
+    {
         logRepository.deleteById(id);
     }
 }
