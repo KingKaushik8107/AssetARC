@@ -13,6 +13,7 @@ import com.example.demo.dto.AssetRequestDto;
 import com.example.demo.dto.DashboardStatsDto;
 import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.enums.AssetStatus;
+import com.example.demo.enums.ScheduleStatus;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
@@ -65,14 +66,15 @@ public class AssetService {
                 .installDate(dto.getInstallDate())
                 .purchasePrice(dto.getPurchasePrice())
                 .expectedLifespanYears(dto.getExpectedLifespanYears())
-                .currentStatus(IndustrialAsset.AssetStatus.ACTIVE)
+                .currentStatus(AssetStatus.ACTIVE)
                 .currentHealth(100)
                 .build();
         return repository.save(asset);
     }
 
     @Transactional
-    public IndustrialAsset updateAsset(Long id, AssetRequestDto dto) {
+    public IndustrialAsset updateAsset(Long id, AssetRequestDto dto)
+    {
         IndustrialAsset asset = getAssetById(id);
         asset.setName(dto.getName());
         asset.setCategory(dto.getCategory());
@@ -83,12 +85,12 @@ public class AssetService {
     }
 
     @Transactional
-    public void decommissionAsset(Long id) {
+    public void decommissionAsset(Long id) 
+    {
         IndustrialAsset asset = getAssetById(id);
-        asset.setCurrentStatus(IndustrialAsset.AssetStatus.DECOMMISSIONED);
+        asset.setCurrentStatus(AssetStatus.DECOMMISSIONED);
         repository.save(asset);
-        List<MaintenanceSchedule> pendingSchedules = scheduleRepository.findByAssetIdAndStatus(id,
-                MaintenanceSchedule.ScheduleStatus.PENDING);
+        List<MaintenanceSchedule> pendingSchedules = scheduleRepository.findByAssetIdAndStatus(id,ScheduleStatus.PENDING);
         pendingSchedules.forEach(s -> s.setStatus(MaintenanceSchedule.ScheduleStatus.CANCELLED));
         scheduleRepository.saveAll(pendingSchedules);
     }

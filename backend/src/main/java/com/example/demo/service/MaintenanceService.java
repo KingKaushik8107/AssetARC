@@ -6,6 +6,9 @@ import com.example.demo.dto.ScheduleRequestDto;
 import com.example.demo.entity.MaintenanceLog;
 import com.example.demo.entity.MaintenanceSchedule;
 import com.example.demo.entity.SystemUser;
+import com.example.demo.enums.AssetStatus;
+import com.example.demo.enums.Priority;
+import com.example.demo.enums.ScheduleStatus;
 import com.example.demo.exception.BusinessValidationException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
@@ -27,7 +30,7 @@ public class MaintenanceService {
     private final SystemUserRepository userRepository;
 
     public List<MaintenanceSchedule> getUpcomingSchedules() {
-        return scheduleRepository.findByStatus(MaintenanceSchedule.ScheduleStatus.PENDING);
+        return scheduleRepository.findByStatus(ScheduleStatus.PENDING);
     }
 
     public List<MaintenanceLog> getAllLogs() {
@@ -44,12 +47,12 @@ public class MaintenanceService {
                 .plannedDate(dto.getPlannedDate())
                 .maintenanceType(dto.getMaintenanceType())
                 .priority(dto.getPriority())
-                .status(MaintenanceSchedule.ScheduleStatus.PENDING)
+                .status(ScheduleStatus.PENDING)
                 .build();
 
         // If high priority, move asset to under maintenance immediately
-        if (dto.getPriority() == MaintenanceSchedule.Priority.HIGH || dto.getPriority() == MaintenanceSchedule.Priority.CRITICAL) {
-            asset.setCurrentStatus(IndustrialAsset.AssetStatus.UNDER_MAINTENANCE);
+        if (dto.getPriority() == Priority.HIGH || dto.getPriority() == Priority.CRITICAL) {
+            asset.setCurrentStatus(AssetStatus.UNDER_MAINTENANCE);
             assetRepository.save(asset);
         }
 
@@ -61,7 +64,7 @@ public class MaintenanceService {
         MaintenanceSchedule schedule = scheduleRepository.findById(dto.getScheduleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Schedule not found"));
 
-        if (schedule.getStatus() != MaintenanceSchedule.ScheduleStatus.PENDING) {
+        if (schedule.getStatus() != ScheduleStatus.PENDING) {
             throw new BusinessValidationException("Task is already processed or cancelled");
         }
 
@@ -80,12 +83,12 @@ public class MaintenanceService {
         logRepository.save(log);
 
         // 2. Update Schedule
-        schedule.setStatus(MaintenanceSchedule.ScheduleStatus.COMPLETED);
+        schedule.setStatus(ScheduleStatus.COMPLETED);
         scheduleRepository.save(schedule);
 
         // 3. Update Asset Status back to ACTIVE and Reset Health
         IndustrialAsset asset = schedule.getAsset();
-        asset.setCurrentStatus(IndustrialAsset.AssetStatus.ACTIVE);
+        asset.setCurrentStatus(AssetStatus.ACTIVE);
         asset.setCurrentHealth(100);
         assetRepository.save(asset);
 
