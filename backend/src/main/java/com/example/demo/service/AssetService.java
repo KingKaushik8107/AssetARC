@@ -19,6 +19,7 @@ import com.example.demo.repository.IndustrialAssetRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,16 +27,20 @@ public class AssetService {
     private final IndustrialAssetRepository repository;
     private final MaintenanceScheduleRepository scheduleRepository;
 
-    public DashboardStatsDto getDashboardStats() {
+    public DashboardStatsDto getDashboardStats()
+    {
         List<IndustrialAsset> all = repository.findAll();
 
         long total = all.size();
         long maintenance = all.stream()
                 .filter(a -> a.getCurrentStatus() == AssetStatus.UNDER_MAINTENANCE).count();
-        double avgHealth = all.stream().mapToInt(a -> a.getCurrentHealth() != null ? a.getCurrentHealth() : 100)
+
+        double avgHealth = all.stream()
+            .mapToInt(a -> a.getCurrentHealth() != null ? a.getCurrentHealth() : 100)
                 .average().orElse(0.0);
-        BigDecimal totalValue = all.stream().map(IndustrialAsset::getPurchasePrice).reduce(BigDecimal.ZERO,
-                BigDecimal::add);
+                
+        BigDecimal totalValue = all.stream().map(IndustrialAsset::getPurchasePrice)
+            .reduce(BigDecimal.ZERO,BigDecimal::add);
 
         Map<String, Long> distribution = all.stream()
                 .collect(Collectors.groupingBy(a -> a.getCurrentStatus().name(), Collectors.counting()));
@@ -49,16 +54,19 @@ public class AssetService {
                 .build();
     }
 
-    public Page<IndustrialAsset> getAllAssets(Pageable pageable) {
+    public Page<IndustrialAsset> getAllAssets(Pageable pageable) 
+    {
         return repository.findAll(pageable);
     }
 
-    public IndustrialAsset getAssetById(Long id) {
+    public IndustrialAsset getAssetById(Long id) 
+    {
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset not found"));
     }
 
-    public IndustrialAsset createAsset(AssetRequestDto dto) {
+    public IndustrialAsset createAsset(AssetRequestDto dto)
+    {
         IndustrialAsset asset = IndustrialAsset.builder()
                 .assetTag(dto.getAssetTag())
                 .name(dto.getName())
