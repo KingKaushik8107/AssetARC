@@ -1,49 +1,46 @@
 package com.example.demo.service;
 
-import java.math.BigDecimal;
-import java.util.*;
-
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.example.demo.dto.DashboardStatsDto;
 import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.enums.AssetStatus;
 import com.example.demo.repository.IndustrialAssetRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
-public class DashboardService
-{
-    @Autowired
-    IndustrialAssetRepository assetRepository;
+@RequiredArgsConstructor
+public class DashboardService {
+    private final IndustrialAssetRepository assetRepository;
 
     @Transactional(readOnly = true)
-    public DashboardStatsDto getDashboardStats()
-    {
+    public DashboardStatsDto getGlobalStats() {
         long totalAssets = assetRepository.count();
         long activeMaintenance = assetRepository.countByCurrentStatus(AssetStatus.UNDER_MAINTENANCE);
 
-        List<IndustrialAsset> assets = assetRepository.findAll();
+        List<IndustrialAsset> allAssets = assetRepository.findAll();
+        BigDecimal totalValue = allAssets.stream()
+                .map(IndustrialAsset::getPurchasePrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalValue = assets.stream()
-            .map(IndustrialAsset::getPurchasePrice)
-            .filter(price -> price != null)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-        
-            Map<String, Long> statusDistribution = new HashMap<>();
+        Map<String, Long> statusDistribution = allAssets.stream()
+                .collect(Collectors.groupingBy(
+                        asset -> asset.getCurrentStatus().name(),
+                        Collectors.counting()
+                ));
 
-            for (IndustrialAsset asset:assets)
-            {
-                String status = asset.getCurrentStatus().name();
-                statusDistribution.put(status, statusDistribution.getOrDefault(status, 0L)+1);
-            }
+        // Mocking average health for simplicity in this aggregate view
+        double avgHealth = 85.5;
 
-            return DashboardStatsDto.builder()
+        return DashboardStatsDto.builder()
                 .totalAssets(totalAssets)
                 .activeMaintenanceCount(activeMaintenance)
+                .averageHealthScore(avgHealth)
                 .totalFleetValue(totalValue)
-                .averageHealthScore(85.5)
                 .statusDistribution(statusDistribution)
                 .build();
     }

@@ -1,74 +1,56 @@
 package com.example.demo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.example.demo.dto.AuthRequestDto;
 import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.RegisterDto;
 import com.example.demo.entity.SystemUser;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.SystemUserRepository;
 import com.example.demo.security.JwtService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService
-{
-    @Autowired
-    SystemUserRepository userRepository;
+@RequiredArgsConstructor
+public class AuthService {
+    private final SystemUserRepository repository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    public AuthResponseDto register(RegisterDto dto)
-    {
-        SystemUser user = SystemUser.builder()
-            .username(dto.getUsername())
-            .password(passwordEncoder.encode(dto.getPassword()))
-            .role(dto.getRole())
-            .build();
-
-        userRepository.save(user);
-
-        String token = jwtService.generateToken(user);
-
+    public AuthResponseDto register(RegisterDto request) {
+        var user = SystemUser.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
+                .build();
+        repository.save(user);
+        var jwtToken = jwtService.generateToken(user);
         return AuthResponseDto.builder()
-            .token(token)
-            .id(user.getId())
-            .username(user.getUsername())
-            .role(user.getRole().name())
-            .build();
+                .token(jwtToken)
+                .id(user.getId())
+                .username(user.getUsername())
+                .role(user.getRole().name())
+                .build();
     }
 
-    public AuthResponseDto authenticate(AuthRequestDto dto)
-    {
+    public AuthResponseDto authenticate(AuthRequestDto request) {
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                dto.getUsername(),
-                dto.getPassword()
-            )
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
         );
-
-        SystemUser user = userRepository.findByUsername(dto.getUsername())
-            .orElseThrow( ()-> new ResourceNotFoundException("User not found"));
-
-        String token = jwtService.generateToken(user);
-
+        var user = repository.findByUsername(request.getUsername())
+                .orElseThrow();
+        var jwtToken = jwtService.generateToken(user);
         return AuthResponseDto.builder()
-            .token(token)
-            .id(user.getId())
-            .username(user.getUsername())
-            .role(user.getRole().name())
-            .build();
+                .token(jwtToken)
+                .id(user.getId())
+                .username(user.getUsername())
+                .role(user.getRole().name())
+                .build();
     }
 }
