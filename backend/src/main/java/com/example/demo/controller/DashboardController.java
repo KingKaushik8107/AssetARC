@@ -13,12 +13,14 @@ import lombok.*;
 @RestController
 @RequestMapping("/api/dashboard")
 @RequiredArgsConstructor
-public class DashboardController {
+public class DashboardController
+{
     private final DashboardService service;
 
     @GetMapping("/stats")
     @PreAuthorize("hasAnyRole('ASSET_MANAGER', 'OPERATIONS_SUPERVISOR', 'SYSTEM_ADMIN', 'MAINTENANCE_TECHNICIAN')")
-    public ResponseEntity<DashboardStatsDto> getStats() {
+    public ResponseEntity<DashboardStatsDto> getStats()
+    {
         return ResponseEntity.ok(service.getGlobalStats());
     }
 }
