@@ -38,5 +38,4 @@ public class MaintenanceLog
 
     @Column(name = "cost_incurred",nullable = false)
     private BigDecimal costIncurred;
-
 }

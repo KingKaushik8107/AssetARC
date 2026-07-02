@@ -7,7 +7,8 @@ import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface MaintenanceLogRepository extends JpaRepository<MaintenanceLog, Long> {
+public interface MaintenanceLogRepository extends JpaRepository<MaintenanceLog, Long>
+{
     List<MaintenanceLog> findByAssetId(Long assetId);
     
     @Query("SELECT SUM(l.costIncurred) FROM MaintenanceLog l WHERE l.asset.id = :assetId")
