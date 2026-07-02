@@ -3,8 +3,6 @@ package com.example.demo.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.example.demo.enums.AssetStatus;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,14 +36,6 @@ public class IndustrialAsset
     @Column(name = "expected_lifespan_years",nullable = false)
     private int expectedLifespanYears;
 
-
-    public enum AssetStatus
-    {
-        ACTIVE,
-        UNDER_MAINTENANCE,
-        DECOMMISSIONED
-    }
-
     @Enumerated(EnumType.STRING)
     @Column(name = "current_status",nullable = false)
     private AssetStatus currentStatus;
@@ -53,5 +43,10 @@ public class IndustrialAsset
     @Column(name = "current_health")
     private Integer currentHealth;
 
-
+    public enum AssetStatus
+    {
+        ACTIVE,
+        UNDER_MAINTENANCE,
+        DECOMMISSIONED
+    }
 }

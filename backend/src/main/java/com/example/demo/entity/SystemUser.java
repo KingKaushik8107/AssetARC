@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.demo.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -31,6 +30,8 @@ public class SystemUser implements UserDetails
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public enum Role
     {
@@ -39,11 +40,6 @@ public class SystemUser implements UserDetails
         OPERATIONS_SUPERVISOR,
         SYSTEM_ADMIN
     }
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-
     
     @JsonIgnore
     @Override

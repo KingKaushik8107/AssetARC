@@ -2,10 +2,6 @@ package com.example.demo.entity;
 
 import java.time.LocalDate;
 
-import com.example.demo.enums.MaintenanceType;
-import com.example.demo.enums.Priority;
-import com.example.demo.enums.ScheduleStatus;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -47,7 +43,13 @@ public class MaintenanceSchedule
         REPAIR,
         INSPECTION    
     }
-
+    public enum Priority 
+    {
+        LOW,
+        MEDIUM,
+        HIGH,
+        CRITICAL
+    }
     public enum ScheduleStatus
     {
         PENDING,
