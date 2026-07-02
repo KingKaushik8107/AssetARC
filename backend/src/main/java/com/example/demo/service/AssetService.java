@@ -13,12 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.dto.AssetRequestDto;
 import com.example.demo.dto.DashboardStatsDto;
 import com.example.demo.entity.IndustrialAsset;
+import com.example.demo.entity.MaintenanceSchedule;
 import com.example.demo.enums.AssetStatus;
 import com.example.demo.enums.ScheduleStatus;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IndustrialAssetRepository;
 import com.example.demo.repository.MaintenanceScheduleRepository;
-
 
 import lombok.*;
 
@@ -101,7 +101,7 @@ public class AssetService
         asset.setCurrentStatus(AssetStatus.DECOMMISSIONED);
         repository.save(asset);
         List<MaintenanceSchedule> pendingSchedules = scheduleRepository.findByAssetIdAndStatus(id,ScheduleStatus.PENDING);
-        pendingSchedules.forEach(s -> s.setStatus(MaintenanceSchedule.ScheduleStatus.CANCELLED));
+        pendingSchedules.forEach(s -> s.setStatus(ScheduleStatus.CANCELLED));
         scheduleRepository.saveAll(pendingSchedules);
     }
 }
