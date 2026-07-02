@@ -43,7 +43,7 @@ public class IndustrialAsset
     private AssetStatus currentStatus;
 
     @Column(name = "current_health")
-    private int currentHealth;
+    private Integer currentHealth;
 
 
 }
