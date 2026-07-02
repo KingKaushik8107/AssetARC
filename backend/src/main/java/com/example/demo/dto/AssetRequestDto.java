@@ -15,6 +15,6 @@ public class AssetRequestDto
     private String name;
     private String category;
     private LocalDate installDate;
-    private BigDecimal purchaseprice;
+    private BigDecimal purchasePrice;
     private Integer expectedLifespanYears;
 }
