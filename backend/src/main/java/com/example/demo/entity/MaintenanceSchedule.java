@@ -36,19 +36,22 @@ public class MaintenanceSchedule
     @Column(nullable = false)
     private Priority priority;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ScheduleStatus status;
+
+
+    public enum MaintenanceType
+    {
+        ROUTINE,
+        REPAIR,
+        INSPECTION    
+    }
+
     public enum ScheduleStatus
     {
         PENDING,
         COMPLETED,
         CANCELLED
-    }
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ScheduleStatus status;
-
-    public Object setStatus(ScheduleStatus cancelled) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
     }
 }
