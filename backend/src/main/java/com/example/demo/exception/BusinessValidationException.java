@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class BusinessValidationException extends RuntimeException 
 {
 
-    public BusinessValidationException(String message) 
+    public BusinessValidationException(String msg) 
     {
-        super(message);
+        super(msg);
     }
 }
