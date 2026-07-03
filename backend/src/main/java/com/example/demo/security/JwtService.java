@@ -19,12 +19,12 @@ public class JwtService
     @Value("${application.security.jwt.secret-key:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}")
     private String secretKey;
 
-    public String extractUsername(String token) 
+    public String extractUsername(String token)
     {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) 
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver)
     {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
