@@ -81,9 +81,9 @@ public class MaintenanceService
         SystemUser technician = userRepository.findById(dto.getTechnicianId())
                 .orElseThrow(() -> new ResourceNotFoundException("Technician not found"));
             
-        if (technician.getRole() != Role.MAINTENANCE_TECHNICIAN) {
-            throw new BusinessValidationException("The selected user is not a maintenance technician");
-        }
+        // if (technician.getRole() != Role.MAINTENANCE_TECHNICIAN) {
+        //     throw new BusinessValidationException("The selected user is not a maintenance technician");
+        // }
 
         MaintenanceLog log = MaintenanceLog.builder()
                 .asset(schedule.getAsset())
