@@ -1,7 +1,7 @@
 package com.example.demo.config;
 
-// import java.math.BigDecimal;
-// import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import com.example.demo.entity.SystemUser;
 import com.example.demo.entity.SystemUser.Role;
 import com.example.demo.repository.SystemUserRepository;
-// import com.example.demo.entity.IndustrialAsset;
-// import com.example.demo.entity.IndustrialAsset.AssetStatus;
-// import com.example.demo.repository.IndustrialAssetRepository;
+import com.example.demo.entity.IndustrialAsset;
+import com.example.demo.entity.IndustrialAsset.AssetStatus;
+import com.example.demo.repository.IndustrialAssetRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,13 +21,13 @@ import lombok.RequiredArgsConstructor;
 public class DataSeeder implements CommandLineRunner {
 
     private final SystemUserRepository userRepository;
-    // private final IndustrialAssetRepository assetRepository;
+    private final IndustrialAssetRepository assetRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
         seedUsers();
-        // seedData();
+        seedData();
     }
 
     private void seedUsers() {
