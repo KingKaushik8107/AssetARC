@@ -24,7 +24,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         response.getWriter().write("""
         {
-            "message":"Please Login"
+            "message":"Please Login and Authorize"
         }
         """);
     }

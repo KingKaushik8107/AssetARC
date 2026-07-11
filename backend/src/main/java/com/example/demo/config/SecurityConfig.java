@@ -24,32 +24,34 @@ public class SecurityConfig
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter,
-                          AuthenticationProvider authenticationProvider)
-    {
+                      AuthenticationProvider authenticationProvider,
+                      JwtAuthenticationEntryPoint authenticationEntryPoint) {
+
         this.jwtAuthFilter = jwtAuthFilter;
         this.authenticationProvider = authenticationProvider;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     @Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-    http.csrf(csrf -> csrf.disable())
-        .sessionManagement(session ->
-            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .exceptionHandling(exception ->
-            exception.authenticationEntryPoint(authenticationEntryPoint))
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(
-                    "/api/auth/**",
-                    "/swagger-ui/**",
-                    "/swagger-ui.html",
-                    "/v3/api-docs/**")
-            .permitAll()
-            .anyRequest().authenticated())
-        .authenticationProvider(authenticationProvider)
-        .addFilterBefore(jwtAuthFilter,
-                UsernamePasswordAuthenticationFilter.class);
+        http.csrf(csrf -> csrf.disable())
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(exception ->
+                exception.authenticationEntryPoint(authenticationEntryPoint))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                        "/api/auth/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**")
+                .permitAll()
+                .anyRequest().authenticated())
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthFilter,
+                    UsernamePasswordAuthenticationFilter.class);
 
-    return http.build();
-}
+        return http.build();
+    }
 }
