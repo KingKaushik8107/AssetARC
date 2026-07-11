@@ -60,21 +60,21 @@ public class DataSeeder implements CommandLineRunner {
         }
     }
 
-    // private void seedData() {
+    private void seedData() {
 
-    //     if (assetRepository.count() == 0) {
+        if (assetRepository.count() == 0) {
 
-    //         assetRepository.save(
-    //                 IndustrialAsset.builder()
-    //                         .assetTag("CNC-2024-X1")
-    //                         .name("CNC Machine")
-    //                         .category("Manufacturing")
-    //                         .installDate(LocalDate.now())
-    //                         .purchasePrice(BigDecimal.valueOf(500000))
-    //                         .expectedLifespanYears(10)
-    //                         .currentStatus(AssetStatus.ACTIVE)
-    //                         .currentHealth(100)
-    //                         .build());
-    //     }
-    // }
+            assetRepository.save(
+                    IndustrialAsset.builder()
+                            .assetTag("CNC-2024-X1")
+                            .name("CNC Machine")
+                            .category("Manufacturing")
+                            .installDate(LocalDate.now())
+                            .purchasePrice(BigDecimal.valueOf(500000))
+                            .expectedLifespanYears(10)
+                            .currentStatus(AssetStatus.ACTIVE)
+                            .currentHealth(100)
+                            .build());
+        }
+    }
 }
