@@ -12,6 +12,7 @@ import com.example.demo.entity.IndustrialAsset;
 import com.example.demo.entity.MaintenanceLog;
 import com.example.demo.entity.MaintenanceSchedule;
 import com.example.demo.entity.SystemUser;
+import com.example.demo.entity.SystemUser.Role;
 import com.example.demo.entity.IndustrialAsset.AssetStatus;
 import com.example.demo.entity.MaintenanceSchedule.Priority;
 import com.example.demo.entity.MaintenanceSchedule.ScheduleStatus;
@@ -79,6 +80,10 @@ public class MaintenanceService
 
         SystemUser technician = userRepository.findById(dto.getTechnicianId())
                 .orElseThrow(() -> new ResourceNotFoundException("Technician not found"));
+            
+        if (technician.getRole() != Role.MAINTENANCE_TECHNICIAN) {
+            throw new BusinessValidationException("The selected user is not a maintenance technician");
+        }
 
         MaintenanceLog log = MaintenanceLog.builder()
                 .asset(schedule.getAsset())
