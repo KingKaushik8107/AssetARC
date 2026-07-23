@@ -57,6 +57,12 @@ public class DataSeeder implements CommandLineRunner {
                     .password(passwordEncoder.encode("super123"))
                     .role(Role.OPERATIONS_SUPERVISOR)
                     .build());
+
+             userRepository.save(SystemUser.builder()
+                    .username("string")
+                    .password(passwordEncoder.encode("string"))
+                    .role(Role.SYSTEM_ADMIN)
+                    .build());
         }
     }
 
