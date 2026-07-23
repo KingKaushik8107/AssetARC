@@ -146,14 +146,6 @@ public class DataSeeder implements CommandLineRunner {
                                         .build();
 
                         MaintenanceSchedule s3 = MaintenanceSchedule.builder()
-                                        .asset(conveyor)
-                                        .plannedDate(LocalDate.now().minusDays(15))
-                                        .maintenanceType(MaintenanceSchedule.MaintenanceType.INSPECTION)
-                                        .priority(MaintenanceSchedule.Priority.LOW)
-                                        .status(MaintenanceSchedule.ScheduleStatus.CANCELLED)
-                                        .build();
-
-                        MaintenanceSchedule s4 = MaintenanceSchedule.builder()
                                         .asset(cnc)
                                         .plannedDate(LocalDate.now().minusDays(30))
                                         .maintenanceType(MaintenanceSchedule.MaintenanceType.ROUTINE)
@@ -161,7 +153,7 @@ public class DataSeeder implements CommandLineRunner {
                                         .status(MaintenanceSchedule.ScheduleStatus.COMPLETED)
                                         .build();
 
-                        MaintenanceSchedule s5 = MaintenanceSchedule.builder()
+                        MaintenanceSchedule s4 = MaintenanceSchedule.builder()
                                         .asset(generator)
                                         .plannedDate(LocalDate.now().plusDays(2))
                                         .maintenanceType(MaintenanceSchedule.MaintenanceType.REPAIR)
@@ -169,7 +161,7 @@ public class DataSeeder implements CommandLineRunner {
                                         .status(MaintenanceSchedule.ScheduleStatus.PENDING)
                                         .build();
 
-                        scheduleRepository.saveAll(Arrays.asList(s1, s2, s3, s4, s5));
+                        scheduleRepository.saveAll(Arrays.asList(s1, s2, s3, s4));
 
                         // Seed Logs
                        SystemUser tech = userRepository.findByUsername("tech").orElseThrow();
