@@ -1,76 +1,64 @@
 package com.example.demo.config;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
+import com.example.demo.entity.*;
+import com.example.demo.repository.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import com.example.demo.entity.SystemUser;
-import com.example.demo.entity.SystemUser.Role;
-import com.example.demo.repository.SystemUserRepository;
-import com.example.demo.entity.IndustrialAsset;
-import com.example.demo.entity.IndustrialAsset.AssetStatus;
-import com.example.demo.repository.IndustrialAssetRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {
+        private final SystemUserRepository userRepository;
+        private final IndustrialAssetRepository assetRepository;
+        private final MaintenanceScheduleRepository scheduleRepository;
+        private final MaintenanceLogRepository logRepository;
+        private final HealthMetricRepository healthRepository;
+        private final PasswordEncoder passwordEncoder;
 
-    private final SystemUserRepository userRepository;
-    private final IndustrialAssetRepository assetRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    @Override
-    public void run(String... args) throws Exception {
-        seedUsers();
-        seedData();
-    }
-
-    private void seedUsers() {
-
-        if (userRepository.count() == 0) {
-
-            userRepository.save(SystemUser.builder()
-                    .username("admin")
-                    .password(passwordEncoder.encode("admin123"))
-                    .role(Role.SYSTEM_ADMIN)
-                    .build());
-
-            userRepository.save(SystemUser.builder()
-                    .username("manager")
-                    .password(passwordEncoder.encode("manager123"))
-                    .role(Role.ASSET_MANAGER)
-                    .build());
-
-            userRepository.save(SystemUser.builder()
-                    .username("tech")
-                    .password(passwordEncoder.encode("tech123"))
-                    .role(Role.MAINTENANCE_TECHNICIAN)
-                    .build());
-
-            userRepository.save(SystemUser.builder()
-                    .username("supervisor")
-                    .password(passwordEncoder.encode("super123"))
-                    .role(Role.OPERATIONS_SUPERVISOR)
-                    .build());
-
-             userRepository.save(SystemUser.builder()
-                    .username("string")
-                    .password(passwordEncoder.encode("string"))
-                    .role(Role.SYSTEM_ADMIN)
-                    .build());
+        @Override
+        public void run(String... args) throws Exception {
+                seedUsers();
+                seedData();
         }
-    }
 
-    private void seedData() {
+        private void seedUsers() {
+                if (userRepository.count() == 0) {
+                        userRepository.save(SystemUser.builder()
+                                        .username("admin")
+                                        .password(passwordEncoder.encode("admin123"))
+                                        .role(SystemUser.Role.SYSTEM_ADMIN)
+                                        .build());
 
-        if (assetRepository.count() == 0)
-        {
-            IndustrialAsset cnc = assetRepository.findByAssetTag("CNC-001")
+                        userRepository.save(SystemUser.builder()
+                                        .username("manager")
+                                        .password(passwordEncoder.encode("manager123"))
+                                        .role(SystemUser.Role.ASSET_MANAGER)
+                                        .build());
+
+                        userRepository.save(SystemUser.builder()
+                                        .username("tech")
+                                        .password(passwordEncoder.encode("tech123"))
+                                        .role(SystemUser.Role.MAINTENANCE_TECHNICIAN)
+                                        .build());
+
+                        userRepository.save(SystemUser.builder()
+                                        .username("supervisor")
+                                        .password(passwordEncoder.encode("super123"))
+                                        .role(SystemUser.Role.OPERATIONS_SUPERVISOR)
+                                        .build());
+                }
+        }
+
+        private void seedData() {
+                if (assetRepository.count() == 0)
+                {
+                        IndustrialAsset cnc = assetRepository.findByAssetTag("CNC-001")
                                         .orElseGet(() -> assetRepository.save(IndustrialAsset.builder()
                                                         .assetTag("CNC-001")
                                                         .name("Main CNC Machine")
@@ -139,6 +127,103 @@ public class DataSeeder implements CommandLineRunner {
 
                         assetRepository.saveAll(Arrays.asList(cnc, forklift, boiler, conveyor, pump, generator));
 
+                        // Seed Schedules
+                        MaintenanceSchedule s1 = MaintenanceSchedule.builder()
+                                        .asset(cnc)
+                                        .plannedDate(LocalDate.now().plusDays(5))
+                                        .maintenanceType(MaintenanceSchedule.MaintenanceType.ROUTINE)
+                                        .priority(MaintenanceSchedule.Priority.MEDIUM)
+                                        .status(MaintenanceSchedule.ScheduleStatus.PENDING)
+                                        .build();
+
+                        MaintenanceSchedule s2 = MaintenanceSchedule.builder()
+                                        .asset(boiler)
+                                        .plannedDate(LocalDate.now().minusDays(1))
+                                        .maintenanceType(MaintenanceSchedule.MaintenanceType.REPAIR)
+                                        .priority(MaintenanceSchedule.Priority.CRITICAL)
+                                        .status(MaintenanceSchedule.ScheduleStatus.PENDING)
+                                        .build();
+
+                        MaintenanceSchedule s3 = MaintenanceSchedule.builder()
+                                        .asset(conveyor)
+                                        .plannedDate(LocalDate.now().minusDays(15))
+                                        .maintenanceType(MaintenanceSchedule.MaintenanceType.INSPECTION)
+                                        .priority(MaintenanceSchedule.Priority.LOW)
+                                        .status(MaintenanceSchedule.ScheduleStatus.CANCELLED)
+                                        .build();
+
+                        MaintenanceSchedule s4 = MaintenanceSchedule.builder()
+                                        .asset(cnc)
+                                        .plannedDate(LocalDate.now().minusDays(30))
+                                        .maintenanceType(MaintenanceSchedule.MaintenanceType.ROUTINE)
+                                        .priority(MaintenanceSchedule.Priority.MEDIUM)
+                                        .status(MaintenanceSchedule.ScheduleStatus.COMPLETED)
+                                        .build();
+
+                        MaintenanceSchedule s5 = MaintenanceSchedule.builder()
+                                        .asset(generator)
+                                        .plannedDate(LocalDate.now().plusDays(2))
+                                        .maintenanceType(MaintenanceSchedule.MaintenanceType.REPAIR)
+                                        .priority(MaintenanceSchedule.Priority.HIGH)
+                                        .status(MaintenanceSchedule.ScheduleStatus.PENDING)
+                                        .build();
+
+                        scheduleRepository.saveAll(Arrays.asList(s1, s2, s3, s4, s5));
+
+                        // Seed Logs
+                        SystemUser tech = userRepository.findByUsername("tech").orElseThrow();
+
+                        MaintenanceLog l1 = MaintenanceLog.builder()
+                                        .asset(forklift)
+                                        .technician(tech)
+                                        .completionDate(LocalDateTime.now().minusDays(10))
+                                        .workDescription("Hydraulic fluid replacement and tire inspection.")
+                                        .costIncurred(new BigDecimal("450.00"))
+                                        .build();
+
+                        MaintenanceLog l2 = MaintenanceLog.builder()
+                                        .asset(cnc)
+                                        .schedule(s4)
+                                        .technician(tech)
+                                        .completionDate(LocalDateTime.now().minusDays(30))
+                                        .workDescription("Quarterly routine calibration and software update.")
+                                        .costIncurred(new BigDecimal("1200.00"))
+                                        .build();
+
+                        MaintenanceLog l3 = MaintenanceLog.builder()
+                                        .asset(boiler)
+                                        .technician(tech)
+                                        .completionDate(LocalDateTime.now().minusMonths(3))
+                                        .workDescription("Safety valve replacement and pressure test.")
+                                        .costIncurred(new BigDecimal("850.50"))
+                                        .build();
+
+                        logRepository.saveAll(Arrays.asList(l1, l2, l3));
+
+                        // Seed Health Metrics
+                        healthRepository.save(HealthMetric.builder()
+                                        .asset(cnc)
+                                        .recordedAt(LocalDateTime.now())
+                                        .healthScore(92)
+                                        .vibrationLevel(0.02)
+                                        .temperatureCelsius(45.5)
+                                        .build());
+
+                        healthRepository.save(HealthMetric.builder()
+                                        .asset(boiler)
+                                        .recordedAt(LocalDateTime.now())
+                                        .healthScore(65)
+                                        .vibrationLevel(0.15)
+                                        .temperatureCelsius(120.0)
+                                        .build());
+
+                        healthRepository.save(HealthMetric.builder()
+                                        .asset(generator)
+                                        .recordedAt(LocalDateTime.now())
+                                        .healthScore(42)
+                                        .vibrationLevel(0.28)
+                                        .temperatureCelsius(88.0)
+                                        .build());
+                }
         }
-    }
 }
