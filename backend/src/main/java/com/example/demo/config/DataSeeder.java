@@ -167,14 +167,6 @@ public class DataSeeder implements CommandLineRunner {
                        SystemUser tech = userRepository.findByUsername("tech").orElseThrow();
 
                         MaintenanceLog l1 = MaintenanceLog.builder()
-                                        .asset(forklift)
-                                        .technician(tech)
-                                        .completionDate(LocalDateTime.now().minusDays(10))
-                                        .workDescription("Hydraulic fluid replacement and tire inspection.")
-                                        .costIncurred(new BigDecimal("450.00"))
-                                        .build();
-
-                        MaintenanceLog l2 = MaintenanceLog.builder()
                                         .asset(cnc)
                                         .schedule(s4)
                                         .technician(tech)
@@ -183,15 +175,9 @@ public class DataSeeder implements CommandLineRunner {
                                         .costIncurred(new BigDecimal("1200.00"))
                                         .build();
 
-                        MaintenanceLog l3 = MaintenanceLog.builder()
-                                        .asset(boiler)
-                                        .technician(tech)
-                                        .completionDate(LocalDateTime.now().minusMonths(3))
-                                        .workDescription("Safety valve replacement and pressure test.")
-                                        .costIncurred(new BigDecimal("850.50"))
-                                        .build();
+                    
 
-                        logRepository.saveAll(Arrays.asList(l1, l2, l3));
+                        logRepository.saveAll(Arrays.asList(l1));
 
                         // Seed Health Metrics
                         healthRepository.save(HealthMetric.builder()
