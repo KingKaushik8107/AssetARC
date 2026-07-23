@@ -55,7 +55,8 @@ public class DataSeeder implements CommandLineRunner {
                 }
         }
 
-        private void seedData() {
+        private void seedData()
+        {
                 if (assetRepository.count() == 0)
                 {
                         IndustrialAsset cnc = assetRepository.findByAssetTag("CNC-001")
@@ -171,7 +172,7 @@ public class DataSeeder implements CommandLineRunner {
                         scheduleRepository.saveAll(Arrays.asList(s1, s2, s3, s4, s5));
 
                         // Seed Logs
-                        SystemUser tech = userRepository.findByUsername("tech").orElseThrow();
+                       SystemUser tech = userRepository.findByUsername("tech").orElseThrow();
 
                         MaintenanceLog l1 = MaintenanceLog.builder()
                                         .asset(forklift)
