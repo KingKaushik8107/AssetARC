@@ -10,7 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -20,7 +22,7 @@ public class JwtService
     private String secretKey;
 
     @Value("${application.security.jwt.expiration}")
-    private String expiration;
+    private long expiration;
 
     public String extractUsername(String token)
     {
