@@ -168,7 +168,7 @@ public class DataSeeder implements CommandLineRunner {
 
                         MaintenanceLog l1 = MaintenanceLog.builder()
                                         .asset(cnc)
-                                        .schedule(s4)
+                                        .schedule(s3)
                                         .technician(tech)
                                         .completionDate(LocalDateTime.now().minusDays(30))
                                         .workDescription("Quarterly routine calibration and software update.")
