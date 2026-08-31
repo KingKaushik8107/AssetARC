@@ -54,7 +54,7 @@ const AssetList = () => {
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
-            <span>Register Asset</span>
+            <span>Add Asset</span>
           </button>
         )}
       </div>
@@ -75,7 +75,7 @@ const AssetList = () => {
       />
 
       <SearchFilterBar 
-        placeholder="Search by tag, model, or equipment name..." 
+        placeholder="Search by tag or name..."
         onSearch={(val) => setSearchTerm(val)} 
       />
 
