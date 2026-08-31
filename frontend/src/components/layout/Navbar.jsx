@@ -64,7 +64,7 @@ const Navbar = () => {
         <div className="user-profile-badge">
           <div className="user-avatar">{user.username.charAt(0).toUpperCase()}</div>
           <div className="user-details">
-            <span className="user-name">{user.username}</span>
+            <span className="user-name">Welcome, {user.username}</span>
             <span className="user-role-tag">{user.role ? user.role.replace('_', ' ') : 'USER'}</span>
           </div>
         </div>
