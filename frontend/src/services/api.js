@@ -1,22 +1,14 @@
 import axios from 'axios';
 
-const BASE_URL =
-  process.env.REACT_APP_API_URL || 'http://localhost:8080';
-
 const api = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: 'http://localhost:8080/api'
 });
 
 api.interceptors.request.use((config) => {
   const user = JSON.parse(localStorage.getItem('user'));
-
   if (user && user.token) {
     config.headers.Authorization = `Bearer ${user.token}`;
   }
-
   return config;
 });
 
@@ -27,7 +19,6 @@ api.interceptors.response.use(
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
-
     return Promise.reject(error);
   }
 );
