@@ -31,15 +31,6 @@ export const createSchedule = createAsyncThunk(
   }
 );
 
-// export const deleteLog = createAsyncThunk('maintenance/deleteLog', async (id, thunkAPI) => {
-//   try {
-//     await maintenanceService.deleteLog(id);
-//     return id;
-//   } catch (error) {
-//     return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to delete maintenance log');
-//   }
-// });
-
 const maintenanceSlice = createSlice({
   name: 'maintenance',
   initialState: {
