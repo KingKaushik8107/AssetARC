@@ -16,7 +16,12 @@ const maintenanceService = {
   getLogs: async () => {
     const response = await api.get('/maintenance/logs');
     return response.data;
+  },
+  deleteLog: async (id) => {
+    const response = await api.delete(`/maintenance/logs/${id}`);
+    return response.data;
   }
 };
 
 export default maintenanceService;
+
