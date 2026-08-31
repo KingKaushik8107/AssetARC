@@ -64,16 +64,10 @@ const Navbar = () => {
         <div className="user-profile-badge">
           <div className="user-avatar">{user.username.charAt(0).toUpperCase()}</div>
           <div className="user-details">
-            <span className="user-name">
-              Welcome, {user.username}
-            </span>
-
-            <span className="user-role-tag">
-              {user.role
-                ? user.role.replace('_', ' ')
-                : 'USER'}
-            </span>
+            <span className="user-name">Welcome, {user.username}</span>
+            <span className="user-role-tag">{user.role ? user.role.replace('_', ' ') : 'USER'}</span>
           </div>
+        </div>
         <button onClick={handleLogout} className="logout-btn" title="Log Out">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
