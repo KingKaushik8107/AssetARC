@@ -209,7 +209,7 @@ const Login = () => {
               <span>
                 {isRegister
                   ? 'Register & Sign In →'
-                  : 'Sign In to Dashboard →'}
+                  : 'AssetArc Login'}
               </span>
             )}
           </button>
