@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { createAsset } from '../../store/slices/assetSlice';
+import { createAsset, updateAsset } from '../../store/slices/assetSlice';
 
-const AssetModal = ({ isOpen, onClose }) => {
+const AssetModal = ({ isOpen, onClose, assetToEdit = null }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     assetTag: '',
@@ -10,23 +10,64 @@ const AssetModal = ({ isOpen, onClose }) => {
     category: 'MANUFACTURING',
     installDate: '',
     purchasePrice: '',
-    expectedLifespanYears: '',
-    currentStatus: 'ACTIVE'
+    expectedLifespanYears: ''
   });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (assetToEdit) {
+      setFormData({
+        assetTag: assetToEdit.assetTag || '',
+        name: assetToEdit.name || '',
+        category: assetToEdit.category || 'MANUFACTURING',
+        installDate: assetToEdit.installDate ? assetToEdit.installDate.substring(0, 10) : '',
+        purchasePrice: assetToEdit.purchasePrice || '',
+        expectedLifespanYears: assetToEdit.expectedLifespanYears || ''
+      });
+    } else {
+      setFormData({
+        assetTag: '',
+        name: '',
+        category: 'MANUFACTURING',
+        installDate: '',
+        purchasePrice: '',
+        expectedLifespanYears: ''
+      });
+    }
+  }, [assetToEdit, isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(createAsset(formData)).then((res) => {
+    setSaving(true);
+    const payload = {
+      assetTag: formData.assetTag,
+      name: formData.name,
+      category: formData.category,
+      installDate: formData.installDate,
+      purchasePrice: parseFloat(formData.purchasePrice),
+      expectedLifespanYears: parseInt(formData.expectedLifespanYears, 10)
+    };
+
+    if (assetToEdit && assetToEdit.id) {
+      const res = await dispatch(updateAsset({ id: assetToEdit.id, assetData: payload }));
+      setSaving(false);
       if (!res.error) onClose();
-    });
+    } else {
+      const res = await dispatch(createAsset(payload));
+      setSaving(false);
+      if (!res.error) onClose();
+    }
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>Register New Asset</h2>
+        <div className="modal-header">
+          <h2>{assetToEdit ? 'Edit Asset Specifications' : 'Register New Industrial Asset'}</h2>
+          <button className="close-btn" onClick={onClose}>&times;</button>
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Asset Tag</label>
@@ -39,7 +80,7 @@ const AssetModal = ({ isOpen, onClose }) => {
             />
           </div>
           <div className="form-group">
-            <label>Name</label>
+            <label>Equipment Name</label>
             <input 
               type="text" 
               required 
@@ -76,24 +117,30 @@ const AssetModal = ({ isOpen, onClose }) => {
               <label>Purchase Price ($)</label>
               <input 
                 type="number" 
+                step="0.01"
                 required 
                 value={formData.purchasePrice}
                 onChange={(e) => setFormData({...formData, purchasePrice: e.target.value})}
+                placeholder="0.00"
               />
             </div>
             <div className="form-group">
               <label>Lifespan (Years)</label>
               <input 
                 type="number" 
+                min="1"
                 required 
                 value={formData.expectedLifespanYears}
                 onChange={(e) => setFormData({...formData, expectedLifespanYears: e.target.value})}
+                placeholder="10"
               />
             </div>
           </div>
           <div className="modal-actions">
-            <button type="button" className="secondary-btn" onClick={onClose}>Cancel</button>
-            <button type="submit" className="primary-btn">Save Asset</button>
+            <button type="button" className="secondary-btn" onClick={onClose} disabled={saving}>Cancel</button>
+            <button type="submit" className="primary-btn" disabled={saving}>
+              {saving ? 'Saving...' : (assetToEdit ? 'Save Changes' : 'Create Asset')}
+            </button>
           </div>
         </form>
       </div>
@@ -102,3 +149,4 @@ const AssetModal = ({ isOpen, onClose }) => {
 };
 
 export default AssetModal;
+
