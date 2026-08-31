@@ -208,7 +208,7 @@ const Login = () => {
             ) : (
               <span>
                 {isRegister
-                  ? 'Add Asset'
+                  ? 'Register & Sign In →'
                   : 'AssetArc Login'}
               </span>
             )}

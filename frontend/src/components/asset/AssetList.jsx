@@ -95,7 +95,7 @@ const AssetList = () => {
             className="add-btn"
             onClick={handleOpenCreate}
           >
-            <span>Register Asset</span>
+            <span>Add Asset</span>
           </button>
         )}
       </div>
