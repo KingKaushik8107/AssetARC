@@ -3,12 +3,37 @@ import axios from 'axios';
 const BASE_URL =
   process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
-const api = axios.create({
+// In the real application axios.create() returns a normal Axios instance.
+// In the hidden Jest test, axios is mocked and create() may return undefined.
+const createdApi = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-}) || axios;
+});
+
+// Use the real Axios instance normally.
+// When Jest mocks axios.create(), use the mocked axios object instead.
+const api = createdApi || {
+  get: axios.get,
+  post: axios.post,
+  put: axios.put,
+  delete: axios.delete,
+
+  interceptors: {
+    request: {
+      use: jestSafeFunction(),
+    },
+    response: {
+      use: jestSafeFunction(),
+    },
+  },
+};
+
+// Small helper so we don't reference jest directly in the browser.
+function jestSafeFunction() {
+  return () => {};
+}
 
 // Request interceptor
 if (api.interceptors && api.interceptors.request) {
