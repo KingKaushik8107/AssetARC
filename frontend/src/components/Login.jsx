@@ -197,7 +197,7 @@ const Login = () => {
                 <span>{isRegister ? 'Creating Account...' : 'Authenticating...'}</span>
               </span>
             ) : (
-              <span>{isRegister ? 'Register & Sign In →' : 'Sign In to Dashboard →'}</span>
+              <h2>{isRegister ? 'Create an Account' : 'AssetArc Login'}</h2>
             )}
           </button>
 
