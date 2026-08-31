@@ -42,7 +42,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .cors(cors -> {})
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
 
             .sessionManagement(session ->
@@ -59,8 +59,7 @@ public class SecurityConfig {
                     "/v3/api-docs/**"
                 ).permitAll()
 
-                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
-                .permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 
                 .anyRequest().authenticated()
             )
