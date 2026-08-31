@@ -190,14 +190,27 @@ const Login = () => {
             </div>
           )}
 
-          <button type="submit" className="login-submit-btn" disabled={loading}>
+          <button
+            type="submit"
+            className="login-submit-btn"
+            disabled={loading}
+          >
             {loading ? (
               <span className="btn-loading-content">
                 <span className="btn-spinner"></span>
-                <span>{isRegister ? 'Creating Account...' : 'Authenticating...'}</span>
+
+                <span>
+                  {isRegister
+                    ? 'Creating Account...'
+                    : 'Authenticating...'}
+                </span>
               </span>
             ) : (
-              <h2>{isRegister ? 'Create an Account' : 'AssetArc Login'}</h2>
+              <span>
+                {isRegister
+                  ? 'Register & Sign In →'
+                  : 'Sign In to Dashboard →'}
+              </span>
             )}
           </button>
 
