@@ -9,11 +9,29 @@ export const fetchAssets = createAsyncThunk('assets/fetchAll', async (page, thun
   }
 });
 
+export const fetchAssetById = createAsyncThunk('assets/fetchById', async (id, thunkAPI) => {
+  try {
+    return await assetService.getById(id);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to fetch asset');
+  }
+});
+
 export const createAsset = createAsyncThunk('assets/create', async (assetData, thunkAPI) => {
   try {
-    return await assetService.create(assetData);
+    await assetService.create(assetData);
+    return await assetService.getAll(0);
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to create asset');
+  }
+});
+
+export const updateAsset = createAsyncThunk('assets/update', async ({ id, assetData }, thunkAPI) => {
+  try {
+    await assetService.update(id, assetData);
+    return await assetService.getAll(0);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to update asset');
   }
 });
 
@@ -30,6 +48,7 @@ const assetSlice = createSlice({
   name: 'assets',
   initialState: {
     items: [],
+    selectedAsset: null,
     totalPages: 0,
     totalElements: 0,
     loading: false,
@@ -39,6 +58,9 @@ const assetSlice = createSlice({
   reducers: {
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
+    },
+    setSelectedAsset: (state, action) => {
+      state.selectedAsset = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -48,16 +70,30 @@ const assetSlice = createSlice({
       })
       .addCase(fetchAssets.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload.content;
-        state.totalPages = action.payload.totalPages;
-        state.totalElements = action.payload.totalElements;
+        state.items = action.payload.content || [];
+        state.totalPages = action.payload.totalPages || 1;
+        state.totalElements = action.payload.totalElements || 0;
       })
       .addCase(fetchAssets.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(fetchAssetById.fulfilled, (state, action) => {
+        state.selectedAsset = action.payload;
+      })
       .addCase(createAsset.fulfilled, (state, action) => {
-        state.items.unshift(action.payload);
+        if (action.payload?.content) {
+          state.items = action.payload.content;
+          state.totalPages = action.payload.totalPages;
+          state.totalElements = action.payload.totalElements;
+        }
+      })
+      .addCase(updateAsset.fulfilled, (state, action) => {
+        if (action.payload?.content) {
+          state.items = action.payload.content;
+          state.totalPages = action.payload.totalPages;
+          state.totalElements = action.payload.totalElements;
+        }
       })
       .addCase(decommissionAsset.fulfilled, (state, action) => {
         const index = state.items.findIndex(item => item.id === action.payload);
@@ -68,5 +104,6 @@ const assetSlice = createSlice({
   }
 });
 
-export const { setSearchQuery } = assetSlice.actions;
+export const { setSearchQuery, setSelectedAsset } = assetSlice.actions;
 export default assetSlice.reducer;
+

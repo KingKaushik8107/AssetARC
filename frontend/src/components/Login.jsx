@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { login, clearError } from '../store/slices/authSlice';
+import { login, register, clearError } from '../store/slices/authSlice';
 import ThemeToggle from './common/ThemeToggle';
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [isRegister, setIsRegister] = useState(false);
+  const [credentials, setCredentials] = useState({
+    username: '',
+    password: '',
+    role: 'ASSET_MANAGER'
+  });
+  const [successMessage, setSuccessMessage] = useState('');
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, user } = useSelector((state) => state.auth);
@@ -14,7 +21,9 @@ const Login = () => {
     if (user) {
       navigate('/');
     }
-    return () => dispatch(clearError());
+    return () => {
+      dispatch(clearError());
+    };
   }, [user, navigate, dispatch]);
 
   const handleChange = (e) => {
@@ -23,7 +32,23 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(login(credentials));
+    setSuccessMessage('');
+    if (isRegister) {
+      dispatch(register({
+        username: credentials.username,
+        password: credentials.password,
+        role: credentials.role
+      })).then((res) => {
+        if (!res.error) {
+          setSuccessMessage('Account registered successfully! Redirecting...');
+        }
+      });
+    } else {
+      dispatch(login({
+        username: credentials.username,
+        password: credentials.password
+      }));
+    }
   };
 
   return (
@@ -53,8 +78,33 @@ const Login = () => {
                 <path d="M2 12l10 5 10-5"></path>
               </svg>
             </div>
-            <h2>Sign in to AssetArc</h2>
+            <h2>{isRegister ? 'Create an Account' : 'Sign in to AssetArc'}</h2>
             <p className="login-subtitle">Industrial Equipment Lifecycle & Condition Monitor</p>
+          </div>
+
+          <div className="auth-mode-switch">
+            <button
+              type="button"
+              className={`mode-btn ${!isRegister ? 'active' : ''}`}
+              onClick={() => {
+                setIsRegister(false);
+                dispatch(clearError());
+                setSuccessMessage('');
+              }}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              className={`mode-btn ${isRegister ? 'active' : ''}`}
+              onClick={() => {
+                setIsRegister(true);
+                dispatch(clearError());
+                setSuccessMessage('');
+              }}
+            >
+              Register User
+            </button>
           </div>
 
           {error && (
@@ -65,6 +115,15 @@ const Login = () => {
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
               <span>{error}</span>
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="success-message">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>{successMessage}</span>
             </div>
           )}
 
@@ -103,30 +162,56 @@ const Login = () => {
                 onChange={handleChange}
                 placeholder="Enter password"
                 required
-                autoComplete="current-password"
+                autoComplete={isRegister ? 'new-password' : 'current-password'}
               />
             </div>
           </div>
+
+          {isRegister && (
+            <div className="form-group">
+              <label htmlFor="role">Assign System Role</label>
+              <div className="input-with-icon">
+                <svg className="input-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <select
+                  id="role"
+                  name="role"
+                  value={credentials.role}
+                  onChange={handleChange}
+                  className="role-select"
+                >
+                  <option value="ASSET_MANAGER">Asset Manager (Full Asset CRUD)</option>
+                  <option value="MAINTENANCE_TECHNICIAN">Maintenance Technician (Health & Logs)</option>
+                  <option value="OPERATIONS_SUPERVISOR">Operations Supervisor (Dashboard & Specs)</option>
+                  <option value="SYSTEM_ADMIN">System Administrator (Complete Access)</option>
+                </select>
+              </div>
+            </div>
+          )}
 
           <button type="submit" className="login-submit-btn" disabled={loading}>
             {loading ? (
               <span className="btn-loading-content">
                 <span className="btn-spinner"></span>
-                <span>Authenticating...</span>
+                <span>{isRegister ? 'Creating Account...' : 'Authenticating...'}</span>
               </span>
             ) : (
-              <span>Sign In to Dashboard &rarr;</span>
+              <span>{isRegister ? 'Register & Sign In →' : 'Sign In to Dashboard →'}</span>
             )}
           </button>
 
-          <div className="demo-accounts-hint">
-            <span className="hint-title">Demo Access</span>
-            <div className="demo-tags">
-              <code>admin / admin123</code>
-              <code>manager / manager123</code>
-              <code>tech / tech123</code>
+          {!isRegister && (
+            <div className="demo-accounts-hint">
+              <span className="hint-title">Demo Access</span>
+              <div className="demo-tags">
+                <code>admin / admin123</code>
+                <code>manager / manager123</code>
+                <code>tech / tech123</code>
+                <code>supervisor / super123</code>
+              </div>
             </div>
-          </div>
+          )}
         </form>
       </div>
     </div>
@@ -134,3 +219,4 @@ const Login = () => {
 };
 
 export default Login;
+
