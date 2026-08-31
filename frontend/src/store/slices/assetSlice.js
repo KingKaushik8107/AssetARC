@@ -35,14 +35,19 @@ export const updateAsset = createAsyncThunk('assets/update', async ({ id, assetD
   }
 });
 
-export const decommissionAsset = createAsyncThunk('assets/decommission', async (id, thunkAPI) => {
-  try {
-    await assetService.decommission(id);
-    return id;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to decommission asset');
+export const decommissionAsset = createAsyncThunk(
+  'assets/decommission',
+  async (id, thunkAPI) => {
+    try {
+      await assetService.decommission(id);
+      return id;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Failed to decommission asset'
+      );
+    }
   }
-});
+);
 
 const assetSlice = createSlice({
   name: 'assets',
