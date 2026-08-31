@@ -139,7 +139,7 @@ const AssetModal = ({ isOpen, onClose, assetToEdit = null }) => {
           <div className="modal-actions">
             <button type="button" className="secondary-btn" onClick={onClose} disabled={saving}>Cancel</button>
             <button type="submit" className="primary-btn" disabled={saving}>
-              {saving ? 'Saving...' : (assetToEdit ? 'Save Changes' : 'Create Asset')}
+              {saving ? 'Saving...' : (assetToEdit ? 'Save Changes' : 'Save Asset')}
             </button>
           </div>
         </form>
