@@ -1,39 +1,96 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL:
-    process.env.REACT_APP_API_URL ||
-    'http://localhost:8080/api'
-});
+const BASE_URL =
+  process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 
-// Add request interceptor only when Axios provides it.
-// Jest's automatic axios mock does not provide a real instance.
-if (api && api.interceptors && api.interceptors.request) {
-  api.interceptors.request.use((config) => {
+const getAuthHeaders = () => {
+  try {
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (user && user.token) {
-      config.headers = config.headers || {};
-      config.headers.Authorization = `Bearer ${user.token}`;
+      return {
+        Authorization: `Bearer ${user.token}`
+      };
     }
+  } catch (error) {
+    // Ignore invalid localStorage data
+  }
 
-    return config;
-  });
-}
+  return {};
+};
 
-// Add response interceptor only when Axios provides it.
-if (api && api.interceptors && api.interceptors.response) {
-  api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response && error.response.status === 401) {
-        localStorage.removeItem('user');
-        window.location.href = '/login';
-      }
+const handleResponse = (response) => {
+  return response;
+};
 
-      return Promise.reject(error);
+const handleError = (error) => {
+  if (error?.response?.status === 401) {
+    localStorage.removeItem('user');
+
+    if (window.location.pathname !== '/login') {
+      window.location.href = '/login';
     }
-  );
-}
+  }
+
+  return Promise.reject(error);
+};
+
+const api = {
+  get: (url, config = {}) => {
+    return axios
+      .get(`${BASE_URL}${url}`, {
+        ...config,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(config.headers || {}),
+          ...getAuthHeaders()
+        }
+      })
+      .then(handleResponse)
+      .catch(handleError);
+  },
+
+  post: (url, data, config = {}) => {
+    return axios
+      .post(`${BASE_URL}${url}`, data, {
+        ...config,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(config.headers || {}),
+          ...getAuthHeaders()
+        }
+      })
+      .then(handleResponse)
+      .catch(handleError);
+  },
+
+  put: (url, data, config = {}) => {
+    return axios
+      .put(`${BASE_URL}${url}`, data, {
+        ...config,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(config.headers || {}),
+          ...getAuthHeaders()
+        }
+      })
+      .then(handleResponse)
+      .catch(handleError);
+  },
+
+  delete: (url, config = {}) => {
+    return axios
+      .delete(`${BASE_URL}${url}`, {
+        ...config,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(config.headers || {}),
+          ...getAuthHeaders()
+        }
+      })
+      .then(handleResponse)
+      .catch(handleError);
+  }
+};
 
 export default api;
