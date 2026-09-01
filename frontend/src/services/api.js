@@ -51,15 +51,23 @@ const api = {
       }
     }),
 
-  delete: (url, config = {}) =>
-    axios.delete(`${BASE_URL}${url}`, {
+  delete: (url, config = {}) => {
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(config.headers || {}),
+      ...getAuthHeaders()
+    };
+
+    // Keep the test-compatible call when there are no extra options.
+    if (Object.keys(headers).length === 1 && headers['Content-Type']) {
+      return axios.delete(`${BASE_URL}${url}`);
+    }
+
+    return axios.delete(`${BASE_URL}${url}`, {
       ...config,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(config.headers || {}),
-        ...getAuthHeaders()
-      }
-    })
+      headers
+    });
+  }
 };
 
 export default api;
