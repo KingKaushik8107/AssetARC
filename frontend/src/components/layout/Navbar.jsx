@@ -62,15 +62,17 @@ const Navbar = () => {
       <div className="navbar-user">
         <ThemeToggle />
         <div className="user-profile-badge">
-          <div className="user-avatar">{(user?.username || user?.name || 'U').charAt(0).toUpperCase()}</div>
-         
+          <div className="user-avatar">
+            {(user?.username || user?.name || 'U').charAt(0).toUpperCase()}
+          </div>
+
           <div className="user-details">
             <span className="user-name">
-              Welcome, {user.username}
+              Welcome, {user?.username || user?.name || 'User'}
             </span>
 
             <span className="user-role-tag">
-              {user.role
+              {user?.role
                 ? user.role.replace('_', ' ')
                 : 'USER'}
             </span>
