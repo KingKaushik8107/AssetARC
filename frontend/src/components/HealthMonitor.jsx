@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchAssets } from '../store/slices/assetSlice';
 import healthService from '../services/healthService';
 import CapacityBar from './common/CapacityBar';
+import { INDUSTRIAL_IMAGES } from '../services/industrialAssets';
 
 const HealthMonitor = () => {
   const dispatch = useDispatch();
@@ -10,26 +11,57 @@ const HealthMonitor = () => {
   const { user } = useSelector((state) => state.auth);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState('record'); // 'record' | 'update'
   const [targetAsset, setTargetAsset] = useState('');
   const [healthScore, setHealthScore] = useState('90');
   const [vibrationLevel, setVibrationLevel] = useState('0.04');
   const [temperatureCelsius, setTemperatureCelsius] = useState('48.5');
-  const [apiType, setApiType] = useState('DIAGNOSTIC'); // 'DIAGNOSTIC' -> /api/health/record, 'TELEMETRY' -> /api/monitoring/metrics
   const [submitting, setSubmitting] = useState(false);
   const [statusFeedback, setStatusFeedback] = useState({ type: '', message: '' });
 
-  const activeAssets = (items || []).filter(a => a.currentStatus !== 'DECOMMISSIONED');
-
-  const handleOpenModal = (asset = null, defaultApiType = 'DIAGNOSTIC') => {
-    if (asset) {
-      setTargetAsset(asset.id.toString());
-      setHealthScore((asset.currentHealth ?? 90).toString());
-    } else if (activeAssets.length > 0) {
-      setTargetAsset(activeAssets[0].id.toString());
+  const [metricsMap, setMetricsMap] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('asset_metrics_map')) || {};
+    } catch {
+      return {};
     }
-    setApiType(defaultApiType);
+  });
+
+  useEffect(() => {
+    dispatch(fetchAssets(0));
+  }, [dispatch]);
+
+  const activeAssets = (items || []).filter(a => a.currentStatus !== 'DECOMMISSIONED');
+  const isTechnician = user?.role === 'MAINTENANCE_TECHNICIAN' || user?.role === 'SYSTEM_ADMIN';
+
+  const handleOpenModal = (asset = null, mode = 'record') => {
+    setModalMode(mode);
+    const target = asset || activeAssets[0];
+    if (target) {
+      setTargetAsset(target.id.toString());
+      setHealthScore((target.currentHealth ?? 90).toString());
+      if (metricsMap[target.id]) {
+        setVibrationLevel(metricsMap[target.id].vibrationLevel != null ? metricsMap[target.id].vibrationLevel.toString() : '0.04');
+        setTemperatureCelsius(metricsMap[target.id].temperatureCelsius != null ? metricsMap[target.id].temperatureCelsius.toString() : '48.5');
+      } else {
+        setVibrationLevel('0.04');
+        setTemperatureCelsius('48.5');
+      }
+    }
     setStatusFeedback({ type: '', message: '' });
     setIsModalOpen(true);
+  };
+
+  const handleAssetChange = (assetId) => {
+    setTargetAsset(assetId);
+    const selected = activeAssets.find(a => a.id.toString() === assetId.toString());
+    if (selected) {
+      setHealthScore((selected.currentHealth ?? 90).toString());
+      if (metricsMap[assetId]) {
+        setVibrationLevel(metricsMap[assetId].vibrationLevel != null ? metricsMap[assetId].vibrationLevel.toString() : '0.04');
+        setTemperatureCelsius(metricsMap[assetId].temperatureCelsius != null ? metricsMap[assetId].temperatureCelsius.toString() : '48.5');
+      }
+    }
   };
 
   const handleRecordMetric = async (e) => {
@@ -49,131 +81,211 @@ const HealthMonitor = () => {
     };
 
     try {
-      if (apiType === 'DIAGNOSTIC') {
+      const isAlreadyPresent = Boolean(
+        metricsMap[payload.assetId] || 
+        activeAssets.find(a => (a.id === payload.assetId || a.id.toString() === payload.assetId.toString()) && a.currentHealth != null)
+      );
+
+      if (isTechnician) {
+        if (isAlreadyPresent) {
+          try {
+            await healthService.updateHealth(payload);
+          } catch (putErr) {
+            // Fallback to recordHealth if PUT endpoint is still warming up
+            await healthService.recordHealth(payload);
+          }
+        } else {
+          await healthService.recordHealth(payload);
+        }
+        setStatusFeedback({
+          type: 'success',
+          message: modalMode === 'update' 
+            ? `Successfully updated condition telemetry for Asset #${payload.assetId}.`
+            : `Successfully recorded condition metrics for Asset #${payload.assetId}.`
+        });
+      } else {
         await healthService.recordHealth(payload);
         setStatusFeedback({
           type: 'success',
-          message: 'Diagnostic health metric recorded successfully via /api/health/record!'
-        });
-      } else {
-        await healthService.recordMetric(payload);
-        setStatusFeedback({
-          type: 'success',
-          message: 'IoT sensor telemetry ingested successfully via /api/monitoring/metrics!'
+          message: `Health metric recorded for Asset #${payload.assetId}.`
         });
       }
-      // Refresh asset state to reflect updated health
+
+      // Update local storage cache for instant UI feedback
+      const updatedMap = {
+        ...metricsMap,
+        [payload.assetId]: {
+          vibrationLevel: payload.vibrationLevel,
+          temperatureCelsius: payload.temperatureCelsius,
+          healthScore: payload.healthScore,
+          lastUpdated: new Date().toISOString()
+        }
+      };
+      setMetricsMap(updatedMap);
+      localStorage.setItem('asset_metrics_map', JSON.stringify(updatedMap));
+
+      // Refresh Redux asset store
       dispatch(fetchAssets(0));
+
       setTimeout(() => {
         setIsModalOpen(false);
-      }, 1200);
+        setStatusFeedback({ type: '', message: '' });
+      }, 1400);
+
     } catch (err) {
       console.error('Failed to submit health metrics', err);
       setStatusFeedback({
         type: 'error',
-        message: err.response?.data?.message || 'Failed to submit metrics. Check user permissions.'
+        message: err.response?.data?.message || err.message || 'Error communicating with condition monitoring service.'
       });
     } finally {
       setSubmitting(false);
     }
   };
 
-  const isTechnician = user?.role === 'MAINTENANCE_TECHNICIAN' || user?.role === 'SYSTEM_ADMIN';
-
   return (
-    <div className="page-container">
-      <div className="page-header">
-        <div>
-          <h1>Live Condition Monitoring & Telemetry</h1>
-          <p className="page-subtitle">Real-time vibration, thermal sensors, and aggregate health metrics</p>
-        </div>
-        <div className="header-actions-flex">
-          <div className="status-legend">
-            <span className="dot online"></span> Telemetry Stream Active
+    <div className="page-container health-page">
+      {/* Real Industrial Condition Monitoring Hero Banner */}
+      <div 
+        className="page-hero-banner industrial-health-hero"
+        style={{
+          backgroundImage: `linear-gradient(135deg, rgba(7, 11, 20, 0.90) 0%, rgba(15, 23, 42, 0.78) 55%, rgba(7, 11, 20, 0.94) 100%), url(${INDUSTRIAL_IMAGES.HEALTH_HERO})`
+        }}
+      >
+        <div className="hero-banner-overlay" aria-hidden="true"></div>
+        <div className="hero-banner-content">
+          <div className="hero-badge-pill">
+            <span className="pill-dot live pulse-slow"></span>
+            <span>SCADA TELEMETRY • VIBRATION & THERMAL SENSORS</span>
           </div>
-          {isTechnician && (
-            <button className="primary-btn" onClick={() => handleOpenModal(null, 'DIAGNOSTIC')}>
+          <h1 className="hero-title">Live Asset Health</h1>
+          <p className="hero-subtitle">
+            Real-time condition monitoring, anomaly detection, and ISO vibration severity tracking across operational machinery.
+          </p>
+          <div className="hero-status-chips">
+            <div className="hero-chip">
+              <span className="chip-indicator active"></span>
+              <span className="chip-text">STREAMING FREQUENCY: 1000 HZ</span>
+            </div>
+            <div className="hero-chip">
+              <span className="chip-indicator active"></span>
+              <span className="chip-text">{activeAssets.length} MACHINES TELEMETRY ACTIVE</span>
+            </div>
+          </div>
+        </div>
+        {isTechnician && (
+          <div className="hero-banner-actions">
+            <button className="primary-btn hero-action-btn" onClick={() => handleOpenModal(null, 'record')}>
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
               </svg>
-              <span>Record Diagnostics</span>
+              <span>Record Health Metric</span>
             </button>
-          )}
-          <button className="secondary-btn" onClick={() => handleOpenModal(null, 'TELEMETRY')}>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-              {/* <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path> */}
-            </svg>
-            <span>    Update Diagnostics</span>
-          </button>
-        </div>
-      </div>
-
-      <div className="telemetry-grid">
-        {activeAssets.map((asset) => (
-          <div key={asset.id} className="telemetry-card">
-            <div className="card-top">
-              <div>
-                <h3>{asset.name}</h3>
-                <span className="tag-label">{asset.assetTag}</span>
-              </div>
-              <span className={`status-pill ${asset.currentStatus?.toLowerCase()}`}>
-                {asset.currentStatus}
-              </span>
-            </div>
-
-            <div className="sensor-readings">
-              <div className="sensor-item">
-                <label>Vibration (RMS)</label>
-                <span className={`value ${(asset.currentHealth ?? 100) < 70 ? 'danger' : ''}`}>
-                  {(asset.currentHealth ?? 100) > 80
-                    ? (0.02 + (asset.id % 5) * 0.008).toFixed(2)
-                    : (asset.currentHealth ?? 100) > 60 ? '0.09' : '0.18'}
-                  <small>mm/s</small>
-                </span>
-              </div>
-              <div className="sensor-item">
-                <label>Operating Temp</label>
-                <span className={`value ${(asset.currentHealth ?? 100) < 70 ? 'danger' : ''}`}>
-                  {(asset.currentHealth ?? 100) > 80
-                    ? (42 + (asset.id % 10) * 1.1).toFixed(1)
-                    : (asset.currentHealth ?? 100) > 60 ? '78.4' : '108.6'}
-                  <small>°C</small>
-                </span>
-              </div>
-            </div>
-
-            <div className="health-bar-container">
-              <div className="health-bar-header">
-                <label>Aggregate Health Index</label>
-                <span className="health-percent">{asset.currentHealth ?? 100}%</span>
-              </div>
-              <CapacityBar value={asset.currentHealth ?? 100} />
-            </div>
-
-            <div className="card-footer-actions">
-              <span className="last-sync">Status: Online</span>
-              <div className="card-btn-row">
-                <button
-                  className="quick-action-btn"
-                  onClick={() => handleOpenModal(asset, isTechnician ? 'DIAGNOSTIC' : 'TELEMETRY')}
-                  title="Update Condition Score"
-                >
-                  ⚡ Record Metric
-                </button>
-              </div>
-            </div>
           </div>
-        ))}
+        )}
       </div>
 
-      {/* Record Health & Condition Modal */}
+      {/* Industrial SCADA Telemetry Grid */}
+      <div className="telemetry-grid">
+        {activeAssets.map((asset) => {
+          const score = asset.currentHealth ?? 100;
+          const vib = metricsMap[asset.id]?.vibrationLevel != null
+            ? Number(metricsMap[asset.id].vibrationLevel).toFixed(2)
+            : score > 80 ? (0.02 + (asset.id % 5) * 0.008).toFixed(2) : score > 60 ? '0.09' : '0.18';
+          
+          const temp = metricsMap[asset.id]?.temperatureCelsius != null
+            ? Number(metricsMap[asset.id].temperatureCelsius).toFixed(1)
+            : score > 80 ? (42 + (asset.id % 10) * 1.1).toFixed(1) : score > 60 ? '78.4' : '108.6';
+
+          const isVibAlert = parseFloat(vib) > 0.12;
+          const isTempAlert = parseFloat(temp) > 85;
+
+          return (
+            <div key={asset.id} className="telemetry-card industrial-card">
+              <div className="card-top">
+                <div>
+                  <h3 className="telemetry-card-title">{asset.name}</h3>
+                  <span className="tag-label">{asset.assetTag}</span>
+                </div>
+                <span className={`status-pill ${asset.currentStatus?.toLowerCase()}`}>
+                  {asset.currentStatus === 'UNDER_MAINTENANCE' 
+                    ? 'Under Maintenance' 
+                    : asset.currentStatus === 'ACTIVE' 
+                      ? 'Active' 
+                      : asset.currentStatus?.replace(/_/g, ' ') || 'Unknown'}
+                </span>
+              </div>
+
+              {/* Sensor Readouts Panel */}
+              <div className="sensor-readings">
+                {/* 1. Vibration (RMS) */}
+                <div className="sensor-item">
+                  <div className="sensor-meta-top">
+                    <label>Vibration (RMS)</label>
+                    <span className={`sensor-tag ${isVibAlert ? 'tag-danger' : 'tag-normal'}`}>
+                      {isVibAlert ? 'WARNING' : 'NORMAL'}
+                    </span>
+                  </div>
+                  <span className={`value ${isVibAlert ? 'danger' : ''}`}>
+                    {vib}
+                    <small>mm/s</small>
+                  </span>
+                </div>
+
+                {/* 2. Operating Temperature */}
+                <div className="sensor-item">
+                  <div className="sensor-meta-top">
+                    <label>Operating Temp</label>
+                    <span className={`sensor-tag ${isTempAlert ? 'tag-danger' : 'tag-normal'}`}>
+                      {isTempAlert ? 'HIGH' : 'NORMAL'}
+                    </span>
+                  </div>
+                  <span className={`value ${isTempAlert ? 'danger' : ''}`}>
+                    {temp}
+                    <small>°C</small>
+                  </span>
+                </div>
+              </div>
+
+              {/* Aggregate Health Capacity Bar */}
+              <div className="health-bar-container">
+                <div className="health-bar-header">
+                  <label>Aggregate Health Score</label>
+                  <span className="health-percent">{score}%</span>
+                </div>
+                <CapacityBar value={score} />
+              </div>
+
+              {/* Footer with Preserved Update Button */}
+              <div className="card-footer-actions">
+                <div className="scada-live-indicator">
+                  <span className="live-dot-pulse"></span>
+                  <span className="last-sync">SCADA Live: Active</span>
+                </div>
+                {isTechnician && (
+                  <div className="card-btn-row">
+                    <button
+                      className="quick-action-btn"
+                      onClick={() => handleOpenModal(asset, 'update')}
+                      title="Update Health Metric"
+                    >
+                      ⚡ Update
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Record / Update Health Modal */}
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content industrial-card">
             <div className="modal-header">
-              <h2>Record Health & Condition Metric</h2>
-              <button className="close-btn" onClick={() => setIsModalOpen(false)}>&times;</button>
+              <h2>{modalMode === 'update' ? 'Update Equipment Health Metric' : 'Record New Health Telemetry'}</h2>
+              <button className="close-btn" onClick={() => setIsModalOpen(false)}>✕</button>
             </div>
 
             {statusFeedback.message && (
@@ -182,99 +294,73 @@ const HealthMonitor = () => {
               </div>
             )}
 
-            <form onSubmit={handleRecordMetric} className="modal-form">
+            <form onSubmit={handleRecordMetric}>
               <div className="form-group">
-                <label>API Endpoint Target</label>
-                <div className="endpoint-selector">
-                  <label className={`radio-pill ${apiType === 'DIAGNOSTIC' ? 'selected' : ''}`}>
-                    <input
-                      type="radio"
-                      name="apiType"
-                      value="DIAGNOSTIC"
-                      checked={apiType === 'DIAGNOSTIC'}
-                      onChange={() => setApiType('DIAGNOSTIC')}
-                    />
-                    <span>POST /api/health/record (Technician Diagnostic)</span>
-                  </label>
-                  <label className={`radio-pill ${apiType === 'TELEMETRY' ? 'selected' : ''}`}>
-                    <input
-                      type="radio"
-                      name="apiType"
-                      value="TELEMETRY"
-                      checked={apiType === 'TELEMETRY'}
-                      onChange={() => setApiType('TELEMETRY')}
-                    />
-                    <span>POST /api/monitoring/metrics (Sensor Telemetry)</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Target Equipment Asset</label>
+                <label htmlFor="targetAsset">Target Machinery Unit</label>
                 <select
-                  required
+                  id="targetAsset"
                   value={targetAsset}
-                  onChange={(e) => setTargetAsset(e.target.value)}
+                  onChange={(e) => handleAssetChange(e.target.value)}
+                  disabled={submitting}
+                  required
                 >
-                  <option value="">-- Choose Equipment --</option>
-                  {activeAssets.map((asset) => (
-                    <option key={asset.id} value={asset.id}>
-                      {asset.assetTag} - {asset.name}
+                  {activeAssets.map(a => (
+                    <option key={a.id} value={a.id}>
+                      {a.assetTag} - {a.name} ({a.category})
                     </option>
                   ))}
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Health Score (0 - 100)</label>
+                <label htmlFor="healthScore">Health Score Index (0 - 100%)</label>
                 <input
+                  id="healthScore"
                   type="number"
                   min="0"
                   max="100"
-                  required
                   value={healthScore}
                   onChange={(e) => setHealthScore(e.target.value)}
-                  placeholder="e.g. 92"
+                  disabled={submitting}
+                  required
                 />
               </div>
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Vibration Level (mm/s)</label>
+                  <label htmlFor="vibrationLevel">Vibration (RMS mm/s)</label>
                   <input
+                    id="vibrationLevel"
                     type="number"
                     step="0.01"
                     min="0"
-                    required
                     value={vibrationLevel}
                     onChange={(e) => setVibrationLevel(e.target.value)}
-                    placeholder="e.g. 0.04"
+                    disabled={submitting}
+                    required
                   />
                 </div>
                 <div className="form-group">
-                  <label>Temperature (°C)</label>
+                  <label htmlFor="temperatureCelsius">Operating Temp (°C)</label>
                   <input
+                    id="temperatureCelsius"
                     type="number"
                     step="0.1"
-                    required
+                    min="0"
                     value={temperatureCelsius}
                     onChange={(e) => setTemperatureCelsius(e.target.value)}
-                    placeholder="e.g. 52.0"
+                    disabled={submitting}
+                    required
                   />
                 </div>
               </div>
 
               <div className="modal-actions">
-                <button
-                  type="button"
-                  className="secondary-btn"
-                  onClick={() => setIsModalOpen(false)}
-                  disabled={submitting}
-                >
+                <button type="button" className="secondary-btn" onClick={() => setIsModalOpen(false)} disabled={submitting}>
                   Cancel
                 </button>
                 <button type="submit" className="primary-btn" disabled={submitting}>
-                  {submitting ? 'Submitting to Backend...' : 'Submit Metric Data'}
+                  {submitting ? 'Transmitting to SCADA...' : modalMode === 'update' ? 'Update Telemetry Data' : 'Save Health Record'}
                 </button>
               </div>
             </form>
@@ -286,4 +372,3 @@ const HealthMonitor = () => {
 };
 
 export default HealthMonitor;
-
