@@ -17,19 +17,22 @@ export const completeTask = createAsyncThunk('maintenance/completeTask', async (
   }
 });
 
-export const createSchedule = createAsyncThunk(
-  'maintenance/createSchedule',
-  async (scheduleData, thunkAPI) => {
-    try {
-      return await maintenanceService.createSchedule(scheduleData);
-    } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message ||
-        'Failed to create schedule'
-      );
-    }
+export const createSchedule = createAsyncThunk('maintenance/createSchedule', async (scheduleData, thunkAPI) => {
+  try {
+    return await maintenanceService.createSchedule(scheduleData);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to create schedule');
   }
-);
+});
+
+export const deleteLog = createAsyncThunk('maintenance/deleteLog', async (id, thunkAPI) => {
+  try {
+    await maintenanceService.deleteLog(id);
+    return id;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to delete maintenance log');
+  }
+});
 
 const maintenanceSlice = createSlice({
   name: 'maintenance',

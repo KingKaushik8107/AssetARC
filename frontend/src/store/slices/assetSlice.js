@@ -1,9 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import assetService from '../../services/assetService';
 
-export const fetchAssets = createAsyncThunk('assets/fetchAll', async (page, thunkAPI) => {
+export const fetchAssets = createAsyncThunk('assets/fetchAll', async (params = 0, thunkAPI) => {
   try {
-    return await assetService.getAll(page);
+    const page = typeof params === 'object' && params !== null ? (params.page ?? 0) : (typeof params === 'number' ? params : 0);
+    const size = typeof params === 'object' && params !== null ? (params.size ?? 10) : 10;
+    return await assetService.getAll(page, size);
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to fetch assets');
   }
@@ -35,19 +37,14 @@ export const updateAsset = createAsyncThunk('assets/update', async ({ id, assetD
   }
 });
 
-export const decommissionAsset = createAsyncThunk(
-  'assets/decommission',
-  async (id, thunkAPI) => {
-    try {
-      await assetService.decommission(id);
-      return id;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Failed to decommission asset'
-      );
-    }
+export const decommissionAsset = createAsyncThunk('assets/decommission', async (id, thunkAPI) => {
+  try {
+    await assetService.decommission(id);
+    return id;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to decommission asset');
   }
-);
+});
 
 const assetSlice = createSlice({
   name: 'assets',
@@ -66,6 +63,18 @@ const assetSlice = createSlice({
     },
     setSelectedAsset: (state, action) => {
       state.selectedAsset = action.payload;
+    },
+    updateAssetHealth: (state, action) => {
+      const { assetId, healthScore } = action.payload;
+      const asset = state.items.find(a => a.id === assetId || a.id.toString() === assetId.toString());
+      if (asset) {
+        asset.currentHealth = healthScore;
+        if (healthScore < 40) {
+          asset.currentStatus = 'UNDER_MAINTENANCE';
+        } else if (asset.currentStatus === 'UNDER_MAINTENANCE' && healthScore >= 70) {
+          asset.currentStatus = 'ACTIVE';
+        }
+      }
     }
   },
   extraReducers: (builder) => {
@@ -109,6 +118,6 @@ const assetSlice = createSlice({
   }
 });
 
-export const { setSearchQuery, setSelectedAsset } = assetSlice.actions;
+export const { setSearchQuery, setSelectedAsset, updateAssetHealth } = assetSlice.actions;
 export default assetSlice.reducer;
 
