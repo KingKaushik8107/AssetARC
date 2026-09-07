@@ -32,13 +32,8 @@ export const ThemeProvider = ({ children }) => {
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-
   if (!context) {
-    return {
-      theme: 'light',
-      toggleTheme: () => {}
-    };
+    return { theme: 'dark', toggleTheme: () => {}, isDark: true };
   }
-
   return context;
 };

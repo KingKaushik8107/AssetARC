@@ -29,7 +29,7 @@ const Navbar = () => {
           </div>
           <div className="brand-text-wrapper">
             <span className="brand-name">Asset<span className="brand-highlight">Arc</span></span>
-            <span className="brand-sub">Lifecycle Monitor</span>
+            <span className="brand-sub">INDUSTRIAL INTELLIGENCE</span>
           </div>
         </NavLink>
 
@@ -42,13 +42,13 @@ const Navbar = () => {
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
             Assets
           </NavLink>
-          <NavLink to="/maintenance" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-            Maintenance
-          </NavLink>
           <NavLink to="/health" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
             Health Monitor
+          </NavLink>
+          <NavLink to="/maintenance" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+            Maintenance
           </NavLink>
           {(user.role === 'ASSET_MANAGER' || user.role === 'SYSTEM_ADMIN') && (
             <NavLink to="/reports" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
@@ -60,22 +60,16 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-user">
+        <div className="nav-system-status">
+          <span className="system-dot live"></span>
+          {/* <span className="system-label">SCADA ONLINE</span> */}
+        </div>
         <ThemeToggle />
         <div className="user-profile-badge">
-          <div className="user-avatar">
-            {(user?.username || user?.name || 'U').charAt(0).toUpperCase()}
-          </div>
-
+          <div className="user-avatar">{user.username.charAt(0).toUpperCase()}</div>
           <div className="user-details">
-            <span className="user-name">
-              Welcome, {user?.username || user?.name || 'User'}
-            </span>
-
-            <span className="user-role-tag">
-              {user?.role
-                ? user.role.replace('_', ' ')
-                : 'USER'}
-            </span>
+            <span className="user-name">Welcome, {user.username}</span>
+            <span className="user-role-tag">{user.role ? user.role.replace('_', ' ') : 'USER'}</span>
           </div>
         </div>
         <button onClick={handleLogout} className="logout-btn" title="Log Out">
