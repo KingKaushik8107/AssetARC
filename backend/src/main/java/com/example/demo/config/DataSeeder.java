@@ -31,25 +31,25 @@ public class DataSeeder implements CommandLineRunner {
                 if (userRepository.count() == 0) {
                         userRepository.save(SystemUser.builder()
                                         .username("admin")
-                                        .password(passwordEncoder.encode("admin123"))
+                                        .password(passwordEncoder.encode("Admin@123"))
                                         .role(SystemUser.Role.SYSTEM_ADMIN)
                                         .build());
 
                         userRepository.save(SystemUser.builder()
                                         .username("manager")
-                                        .password(passwordEncoder.encode("manager123"))
+                                        .password(passwordEncoder.encode("Manager@123"))
                                         .role(SystemUser.Role.ASSET_MANAGER)
                                         .build());
 
                         userRepository.save(SystemUser.builder()
                                         .username("tech")
-                                        .password(passwordEncoder.encode("tech123"))
+                                        .password(passwordEncoder.encode("Tech@123"))
                                         .role(SystemUser.Role.MAINTENANCE_TECHNICIAN)
                                         .build());
 
                         userRepository.save(SystemUser.builder()
                                         .username("supervisor")
-                                        .password(passwordEncoder.encode("super123"))
+                                        .password(passwordEncoder.encode("Super@123"))
                                         .role(SystemUser.Role.OPERATIONS_SUPERVISOR)
                                         .build());
                 }
