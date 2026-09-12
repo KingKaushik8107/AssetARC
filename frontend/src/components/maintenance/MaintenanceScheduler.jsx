@@ -22,7 +22,7 @@ const MaintenanceScheduler = () => {
   }, [dispatch]);
 
   const canSchedule = user?.role === 'ASSET_MANAGER' || user?.role === 'SYSTEM_ADMIN';
-  const isTechnician = user?.role === 'MAINTENANCE_TECHNICIAN' || user?.role === 'SYSTEM_ADMIN';
+  const isTechnician = user?.role === 'MAINTENANCE_TECHNICIAN';
 
   const filteredSchedules = (schedules || []).filter(task => {
     if (priorityFilter === 'ALL') return true;
