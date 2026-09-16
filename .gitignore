@@ -32,3 +32,6 @@ hs_err_pid*
 
 # Local configuration
 application-local.properties
+
+# Spring Boot local configuration
+backend/src/main/resources/application.properties
