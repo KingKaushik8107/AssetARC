@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from '../../context/ThemeContext';
 
 const ThemeToggle = ({ showLabel = false, className = '' }) => {
-  const { theme, toggleTheme, isDark } = useTheme();
+  const { toggleTheme, isDark } = useTheme();
 
   return (
     <button
